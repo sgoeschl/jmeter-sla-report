@@ -1,0 +1,385 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testResults version="1.2">
+<httpSample t="812" lt="812" ts="1301486342752" s="false" lb="Security.ValidateLogin2" rc="200" rm="OK" tn="CRM 1-1" dt="text" by="551">
+  <assertionResult>
+    <name>Response Assertion</name>
+    <failure>false</failure>
+    <error>false</error>
+  </assertionResult>
+  <assertionResult>
+    <name>Response Assertion</name>
+    <failure>true</failure>
+    <error>false</error>
+    <failureMessage>Test failed: text expected to contain /&gt;lsOk&lt;/</failureMessage>
+  </assertionResult>
+</httpSample>
+<httpSample t="9" lt="9" ts="1301486343600" s="true" lb="Reporting.EnumGroupReport" rc="200" rm="OK" tn="CRM 1-1" dt="text" by="2469"/>
+<httpSample t="8" lt="8" ts="1301486343610" s="true" lb="POS.GetPointOfSaleInfo" rc="200" rm="OK" tn="CRM 1-1" dt="text" by="1571"/>
+<httpSample t="5" lt="5" ts="1301486343621" s="true" lb="OBUManagement.GetDescriptionFROMSO" rc="200" rm="OK" tn="CRM 1-1" dt="text" by="417"/>
+<httpSample t="13" lt="13" ts="1301486343627" s="true" lb="POS.UpdatePOSConfigurationInfo" rc="200" rm="OK" tn="CRM 1-1" dt="text" by="317"/>
+<httpSample t="69" lt="69" ts="1301486343641" s="true" lb="Tasks.EnumPendingTasks" rc="200" rm="OK" tn="CRM 1-1" dt="text" by="5501"/>
+<httpSample t="10" lt="10" ts="1301486343711" s="true" lb="CRM.GetUTCDateTimeToLocalTimeZone" rc="200" rm="OK" tn="CRM 1-1" dt="text" by="1769"/>
+<httpSample t="21" lt="21" ts="1301486343722" s="true" lb="POS.GetOpenInvoicingDocument" rc="200" rm="OK" tn="CRM 1-1" dt="text" by="474"/>
+<httpSample t="8" lt="8" ts="1301486343743" s="true" lb="POS.IsShiftOpenOnPC" rc="200" rm="OK" tn="CRM 1-1" dt="text" by="381"/>
+<httpSample t="15" lt="15" ts="1301486343752" s="true" lb="ConfigProduct.AutomaticallyOpenPOSWhenLogginIn" rc="200" rm="OK" tn="CRM 1-1" dt="text" by="453"/>
+<httpSample t="15" lt="15" ts="1301486343768" s="true" lb="POS.GetPOSShiftInfo" rc="200" rm="OK" tn="CRM 1-1" dt="text" by="531"/>
+<httpSample t="38" lt="38" ts="1301486343783" s="true" lb="POS.OpenShiftIVRLogin" rc="200" rm="OK" tn="CRM 1-1" dt="text" by="513"/>
+<httpSample t="17" lt="17" ts="1301486344531" s="true" lb="Config.PrePayVideoProductMaxQtyOfAccountUnits" rc="200" rm="OK" tn="CRM 1-1" dt="text" by="436">
+  <assertionResult>
+    <name>Response Assertion</name>
+    <failure>false</failure>
+    <error>false</error>
+  </assertionResult>
+</httpSample>
+<httpSample t="13" lt="13" ts="1301486344550" s="true" lb="CRM.EnumPhoneAreaCodes" rc="200" rm="OK" tn="CRM 1-1" dt="text" by="1509">
+  <assertionResult>
+    <name>Response Assertion</name>
+    <failure>false</failure>
+    <error>false</error>
+  </assertionResult>
+</httpSample>
+<httpSample t="15" lt="15" ts="1301486344564" s="true" lb="CRM.EnumVehicleModels" rc="200" rm="OK" tn="CRM 1-1" dt="text" by="1405">
+  <assertionResult>
+    <name>Response Assertion</name>
+    <failure>false</failure>
+    <error>false</error>
+  </assertionResult>
+</httpSample>
+<httpSample t="16" lt="16" ts="1301486344579" s="true" lb="CRM.EnumAccountVehicleOwnershipTypes" rc="200" rm="OK" tn="CRM 1-1" dt="text" by="1985">
+  <assertionResult>
+    <name>Response Assertion</name>
+    <failure>false</failure>
+    <error>false</error>
+  </assertionResult>
+</httpSample>
+<httpSample t="15" lt="15" ts="1301486344596" s="true" lb="CRM.EnumNATOPhoneticAlphabet" rc="200" rm="OK" tn="CRM 1-1" dt="text" by="5285">
+  <assertionResult>
+    <name>Response Assertion</name>
+    <failure>false</failure>
+    <error>false</error>
+  </assertionResult>
+</httpSample>
+<httpSample t="15" lt="15" ts="1301486344612" s="true" lb="CRM.GetDefaultVehicleModel" rc="200" rm="OK" tn="CRM 1-1" dt="text" by="832">
+  <assertionResult>
+    <name>Response Assertion</name>
+    <failure>false</failure>
+    <error>false</error>
+  </assertionResult>
+</httpSample>
+<httpSample t="22" lt="22" ts="1301486344637" s="true" lb="CRM.GetTermsAndConditions" rc="200" rm="OK" tn="CRM 1-1" dt="text" by="9405">
+  <assertionResult>
+    <name>Response Assertion</name>
+    <failure>false</failure>
+    <error>false</error>
+  </assertionResult>
+</httpSample>
+<httpSample t="15" lt="15" ts="1301486344720" s="true" lb="CRM.GetDefaultInvoicingCluster" rc="200" rm="OK" tn="CRM 1-1" dt="text" by="424">
+  <assertionResult>
+    <name>Response Assertion</name>
+    <failure>false</failure>
+    <error>false</error>
+  </assertionResult>
+</httpSample>
+<httpSample t="14" lt="14" ts="1301486344737" s="true" lb="AddressManager.EnumSuburbsByRecord" rc="200" rm="OK" tn="CRM 1-1" dt="text" by="367">
+  <assertionResult>
+    <name>Response Assertion</name>
+    <failure>false</failure>
+    <error>false</error>
+  </assertionResult>
+</httpSample>
+<httpSample t="15" lt="15" ts="1301486344752" s="true" lb="Config.GetCountryDesc" rc="200" rm="OK" tn="CRM 1-1" dt="text" by="385">
+  <assertionResult>
+    <name>Response Assertion</name>
+    <failure>false</failure>
+    <error>false</error>
+  </assertionResult>
+</httpSample>
+<httpSample t="14" lt="14" ts="1301486344768" s="true" lb="Config.GetRegionDesc" rc="200" rm="OK" tn="CRM 1-1" dt="text" by="376">
+  <assertionResult>
+    <name>Response Assertion</name>
+    <failure>false</failure>
+    <error>false</error>
+  </assertionResult>
+</httpSample>
+<httpSample t="20" lt="20" ts="1301486344794" s="true" lb="CRM.SearchVRMRegistered" rc="200" rm="OK" tn="CRM 1-1" dt="text" by="2985">
+  <assertionResult>
+    <name>Response Assertion</name>
+    <failure>false</failure>
+    <error>false</error>
+  </assertionResult>
+</httpSample>
+<httpSample t="14" lt="14" ts="1301486344815" s="true" lb="CRM.OtherContractWithThisVLN" rc="200" rm="OK" tn="CRM 1-1" dt="text" by="315">
+  <assertionResult>
+    <name>Response Assertion</name>
+    <failure>false</failure>
+    <error>false</error>
+  </assertionResult>
+</httpSample>
+<httpSample t="17" lt="17" ts="1301486344830" s="true" lb="CRM.IsVLNAlreadyAssignedToUnusedDayPass" rc="200" rm="OK" tn="CRM 1-1" dt="text" by="462">
+  <assertionResult>
+    <name>Response Assertion</name>
+    <failure>false</failure>
+    <error>false</error>
+  </assertionResult>
+</httpSample>
+<httpSample t="13" lt="13" ts="1301486344848" s="true" lb="CRM.IsVLNAlreadyAssignedToUsedDayPass" rc="200" rm="OK" tn="CRM 1-1" dt="text" by="454">
+  <assertionResult>
+    <name>Response Assertion</name>
+    <failure>false</failure>
+    <error>false</error>
+  </assertionResult>
+</httpSample>
+<httpSample t="21" lt="21" ts="1301486344862" s="true" lb="CRM.IsValidVLN" rc="200" rm="OK" tn="CRM 1-1" dt="text" by="470"/>
+<httpSample t="9" lt="9" ts="1301486344884" s="true" lb="CRM.SearchVRMRegistered" rc="200" rm="OK" tn="CRM 1-1" dt="text" by="2985"/>
+<httpSample t="15" lt="15" ts="1301486344893" s="true" lb="CRM.OtherContractWithThisVLN" rc="200" rm="OK" tn="CRM 1-1" dt="text" by="315"/>
+<httpSample t="20" lt="20" ts="1301486344908" s="true" lb="CRM.EnumVehicleModels" rc="200" rm="OK" tn="CRM 1-1" dt="text" by="15397">
+  <assertionResult>
+    <name>Response Assertion</name>
+    <failure>false</failure>
+    <error>false</error>
+  </assertionResult>
+</httpSample>
+<httpSample t="10" lt="10" ts="1301486344929" s="true" lb="CRM.GetVehicleModel" rc="200" rm="OK" tn="CRM 1-1" dt="text" by="834">
+  <assertionResult>
+    <name>Response Assertion</name>
+    <failure>false</failure>
+    <error>false</error>
+  </assertionResult>
+</httpSample>
+<httpSample t="18" lt="17" ts="1301486344940" s="true" lb="CRM.GetCardPrefixesWithDescription" rc="200" rm="OK" tn="CRM 1-1" dt="text" by="20237">
+  <assertionResult>
+    <name>Response Assertion</name>
+    <failure>false</failure>
+    <error>false</error>
+  </assertionResult>
+</httpSample>
+<httpSample t="10" lt="10" ts="1301486344959" s="true" lb="CRM.ValidatePaymentMean" rc="200" rm="OK" tn="CRM 1-1" dt="text" by="310">
+  <assertionResult>
+    <name>Response Assertion</name>
+    <failure>false</failure>
+    <error>false</error>
+  </assertionResult>
+</httpSample>
+<httpSample t="18" lt="18" ts="1301486344969" s="true" lb="CRM.CalculateMinValueForParameter" rc="200" rm="OK" tn="CRM 1-1" dt="text" by="435">
+  <assertionResult>
+    <name>Response Assertion</name>
+    <failure>false</failure>
+    <error>false</error>
+  </assertionResult>
+</httpSample>
+<httpSample t="24" lt="24" ts="1301486344994" s="true" lb="CRM.ValidatePrepayParameters" rc="200" rm="OK" tn="CRM 1-1" dt="text" by="315">
+  <assertionResult>
+    <name>Response Assertion</name>
+    <failure>false</failure>
+    <error>false</error>
+  </assertionResult>
+</httpSample>
+<httpSample t="13" lt="13" ts="1301486345019" s="true" lb="POS.GetPOSShiftInfo" rc="200" rm="OK" tn="CRM 1-1" dt="text" by="531">
+  <assertionResult>
+    <name>Response Assertion</name>
+    <failure>false</failure>
+    <error>false</error>
+  </assertionResult>
+</httpSample>
+<httpSample t="18" lt="18" ts="1301486345033" s="true" lb="CRM.IsClientDuplicated" rc="200" rm="OK" tn="CRM 1-1" dt="text" by="309">
+  <assertionResult>
+    <name>Response Assertion</name>
+    <failure>false</failure>
+    <error>false</error>
+  </assertionResult>
+</httpSample>
+<httpSample t="17" lt="17" ts="1301486345051" s="true" lb="CRM.EnumActiveLicencePlatesInContractsByVRM" rc="200" rm="OK" tn="CRM 1-1" dt="text" by="1705">
+  <assertionResult>
+    <name>Response Assertion</name>
+    <failure>false</failure>
+    <error>false</error>
+  </assertionResult>
+</httpSample>
+<httpSample t="21" lt="21" ts="1301486345076" s="true" lb="CRM.PreCreateContract" rc="200" rm="OK" tn="CRM 1-1" dt="text" by="595">
+  <assertionResult>
+    <name>Response Assertion</name>
+    <failure>false</failure>
+    <error>false</error>
+  </assertionResult>
+</httpSample>
+<httpSample t="133" lt="133" ts="1301486345098" s="true" lb="CRM.BeginCreateContract" rc="200" rm="OK" tn="CRM 1-1" dt="text" by="646">
+  <assertionResult>
+    <name>Response Assertion</name>
+    <failure>false</failure>
+    <error>false</error>
+  </assertionResult>
+  <assertionResult>
+    <name>Response Assertion</name>
+    <failure>false</failure>
+    <error>false</error>
+  </assertionResult>
+</httpSample>
+<httpSample t="23" lt="23" ts="1301486345233" s="true" lb="CRM.GetAmountCashInCashtray" rc="200" rm="OK" tn="CRM 1-1" dt="text" by="415">
+  <assertionResult>
+    <name>Response Assertion</name>
+    <failure>false</failure>
+    <error>false</error>
+  </assertionResult>
+</httpSample>
+<httpSample t="31" lt="31" ts="1301486345256" s="true" lb="CRM.GetContractInfo" rc="200" rm="OK" tn="CRM 1-1" dt="text" by="9728">
+  <assertionResult>
+    <name>Response Assertion</name>
+    <failure>false</failure>
+    <error>false</error>
+  </assertionResult>
+</httpSample>
+<httpSample t="12" lt="12" ts="1301486345288" s="true" lb="ARCHIVE.GetContractRelatedDocumentTypes" rc="200" rm="OK" tn="CRM 1-1" dt="text" by="4214">
+  <assertionResult>
+    <name>Response Assertion</name>
+    <failure>false</failure>
+    <error>false</error>
+  </assertionResult>
+</httpSample>
+<httpSample t="14" lt="14" ts="1301486345301" s="true" lb="ARCHIVE.EnumContractDocuments" rc="200" rm="OK" tn="CRM 1-1" dt="text" by="3365">
+  <assertionResult>
+    <name>Response Assertion</name>
+    <failure>false</failure>
+    <error>false</error>
+  </assertionResult>
+</httpSample>
+<httpSample t="15" lt="15" ts="1301486345316" s="true" lb="CRM.ChangeContractDocumentValidation" rc="200" rm="OK" tn="CRM 1-1" dt="text" by="323">
+  <assertionResult>
+    <name>Response Assertion</name>
+    <failure>false</failure>
+    <error>false</error>
+  </assertionResult>
+</httpSample>
+<httpSample t="49" lt="49" ts="1301486345332" s="true" lb="CRM.ActivateContract" rc="200" rm="OK" tn="CRM 1-1" dt="text" by="307">
+  <assertionResult>
+    <name>Response Assertion</name>
+    <failure>false</failure>
+    <error>false</error>
+  </assertionResult>
+</httpSample>
+<httpSample t="12" lt="12" ts="1301486345382" s="true" lb="POS.RegisterPOSActivity" rc="200" rm="OK" tn="CRM 1-1" dt="text" by="310">
+  <assertionResult>
+    <name>Response Assertion</name>
+    <failure>false</failure>
+    <error>false</error>
+  </assertionResult>
+</httpSample>
+<httpSample t="16646" lt="16646" ts="1301486345404" s="true" lb="CRM.EndCreateContract" rc="200" rm="OK" tn="CRM 1-1" dt="text" by="610">
+  <assertionResult>
+    <name>Response Assertion</name>
+    <failure>false</failure>
+    <error>false</error>
+  </assertionResult>
+  <assertionResult>
+    <name>Response Assertion</name>
+    <failure>false</failure>
+    <error>false</error>
+  </assertionResult>
+  <assertionResult>
+    <name>Response Assertion</name>
+    <failure>false</failure>
+    <error>false</error>
+  </assertionResult>
+</httpSample>
+<httpSample t="23" lt="21" ts="1301486362052" s="true" lb="REPORTING.GetReportInfo" rc="200" rm="OK" tn="CRM 1-1" dt="text" by="33726">
+  <assertionResult>
+    <name>Response Assertion</name>
+    <failure>false</failure>
+    <error>false</error>
+  </assertionResult>
+</httpSample>
+<httpSample t="4" lt="4" ts="1301486362076" s="true" lb="SQL.GetScalarStr" rc="200" rm="OK" tn="CRM 1-1" dt="text" by="452">
+  <assertionResult>
+    <name>Response Assertion</name>
+    <failure>false</failure>
+    <error>false</error>
+  </assertionResult>
+</httpSample>
+<httpSample t="30" lt="30" ts="1301486362081" s="true" lb="REPORTING.ExecuteSQL4Detail" rc="200" rm="OK" tn="CRM 1-1" dt="text" by="1853">
+  <assertionResult>
+    <name>Response Assertion</name>
+    <failure>false</failure>
+    <error>false</error>
+  </assertionResult>
+</httpSample>
+<httpSample t="4" lt="4" ts="1301486362112" s="true" lb="REPORTING.ExecuteSQL4TCHMessages" rc="200" rm="OK" tn="CRM 1-1" dt="text" by="1341">
+  <assertionResult>
+    <name>Response Assertion</name>
+    <failure>false</failure>
+    <error>false</error>
+  </assertionResult>
+</httpSample>
+<httpSample t="5" lt="5" ts="1301486362117" s="true" lb="REPORTING.ExecuteSQL4TCHInformation" rc="200" rm="OK" tn="CRM 1-1" dt="text" by="3165">
+  <assertionResult>
+    <name>Response Assertion</name>
+    <failure>false</failure>
+    <error>false</error>
+  </assertionResult>
+</httpSample>
+<httpSample t="16" lt="16" ts="1301486362122" s="true" lb="REPORTING.ExecuteSQL4Header" rc="200" rm="OK" tn="CRM 1-1" dt="text" by="2053">
+  <assertionResult>
+    <name>Response Assertion</name>
+    <failure>false</failure>
+    <error>false</error>
+  </assertionResult>
+</httpSample>
+<httpSample t="5" lt="5" ts="1301486362138" s="true" lb="CRM.GetUTCDateTimeToConcessionTimeZone" rc="200" rm="OK" tn="CRM 1-1" dt="text" by="1457">
+  <assertionResult>
+    <name>Response Assertion</name>
+    <failure>false</failure>
+    <error>false</error>
+  </assertionResult>
+</httpSample>
+<httpSample t="4" lt="4" ts="1301486362143" s="true" lb="REPORTING.ExecuteSQL4CurrencySymbol" rc="200" rm="OK" tn="CRM 1-1" dt="text" by="1369">
+  <assertionResult>
+    <name>Response Assertion</name>
+    <failure>false</failure>
+    <error>false</error>
+  </assertionResult>
+</httpSample>
+<httpSample t="11" lt="11" ts="1301486362148" s="true" lb="REPORTING.ExecuteSQL4Balance" rc="200" rm="OK" tn="CRM 1-1" dt="text" by="1549">
+  <assertionResult>
+    <name>Response Assertion</name>
+    <failure>false</failure>
+    <error>false</error>
+  </assertionResult>
+</httpSample>
+<httpSample t="21" lt="21" ts="1301486362160" s="true" lb="REPORTING.ExecuteSQL4Summary" rc="200" rm="OK" tn="CRM 1-1" dt="text" by="1885">
+  <assertionResult>
+    <name>Response Assertion</name>
+    <failure>false</failure>
+    <error>false</error>
+  </assertionResult>
+</httpSample>
+<httpSample t="5" lt="5" ts="1301486362182" s="true" lb="CRM.GetContractStatus" rc="200" rm="OK" tn="CRM 1-1" dt="text" by="394">
+  <assertionResult>
+    <name>Response Assertion</name>
+    <failure>false</failure>
+    <error>false</error>
+  </assertionResult>
+</httpSample>
+<httpSample t="18" lt="18" ts="1301486362188" s="true" lb="CRM.GetContractInfo" rc="200" rm="OK" tn="CRM 1-1" dt="text" by="9720">
+  <assertionResult>
+    <name>Response Assertion</name>
+    <failure>false</failure>
+    <error>false</error>
+  </assertionResult>
+</httpSample>
+<httpSample t="41" lt="41" ts="1301486362207" s="true" lb="CRM.PostCreateContract" rc="200" rm="OK" tn="CRM 1-1" dt="text" by="611">
+  <assertionResult>
+    <name>Response Assertion</name>
+    <failure>false</failure>
+    <error>false</error>
+  </assertionResult>
+  <assertionResult>
+    <name>Response Assertion</name>
+    <failure>false</failure>
+    <error>false</error>
+  </assertionResult>
+  <assertionResult>
+    <name>Response Assertion</name>
+    <failure>false</failure>
+    <error>false</error>
+  </assertionResult>
+</httpSample>
+
+</testResults>

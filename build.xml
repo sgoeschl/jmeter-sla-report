@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- 
+    Build file to generate a JMeter SLA Report.
+    
+	@author Siegfried Goeschl
+-->
+
+<project name="crm-monitoring" default="" basedir="." xmlns:contrib="antlib:net.sf.antcontrib">
+
+  <!-- import shell environment as env.*-->
+  <property environment="env"/>
+
+  <!-- load the user specific properties -->
+  <property file="user.properties"/>
+
+  <!-- load the project specific properties -->
+  <property file="build.properties"/>
+
+  <!-- the directory where generated output goes -->
+  <property name="project.build.directory" value="${basedir}/target" />
+
+  <!-- the JMeter JTL file to process -->
+  <property name="jmeter.jtl.file" value="callcenter.jtl" />
+
+  <!-- setup the class path to run the report -->
+  <path id="project.class.path">
+    <fileset dir="${basedir}/lib">
+      <include name="*.jar"/>
+    </fileset>    
+  </path>		
+      
+  <!-- =================================================================== -->
+  <!-- General                                                             -->
+  <!-- =================================================================== -->
+
+  <target name="clean" description="clean the project">
+    <delete dir="${project.build.directory}"/>        
+  </target>
+
+  <target name="report" description="display current project configuration">
+      <mkdir dir="${project.build.directory}"/>
+      <echo>Processing the following file : ${jmeter.jtl.file}</echo>
+      <echo>The result will be stored here : ${project.build.directory}/jmeter-report.html</echo>      
+      <java classname="org.apache.jmeter.extra.report.sla.Main">
+        <classpath>
+            <fileset dir="${basedir}/lib">
+              <include name="**/*.jar"/>
+            </fileset>
+        </classpath>
+        <arg value="${project.build.directory}/jmeter-report.html"/>        
+        <arg value="${jmeter.jtl.file}"/>
+      </java>        
+  </target>
+  
+  <target name="report-all" description="display current project configuration">
+      <mkdir dir="${project.build.directory}"/>
+      <echo>Processing the following file : ${jmeter.jtl.file}</echo>
+      <echo>The result will be stored here : ${project.build.directory}/jmeter-report.html</echo>      
+      <java classname="org.apache.jmeter.extra.report.sla.Main">
+        <classpath>
+            <fileset dir="${basedir}/lib">
+              <include name="**/*.jar"/>
+            </fileset>
+        </classpath>
+        <arg value="${project.build.directory}/jmeter-report.html"/>        
+        <arg value="callcenter-1.jtl"/>
+        <arg value="callcenter-2.jtl"/>
+        <arg value="callcenter-3.jtl"/>
+      </java>        
+  </target>  
+  
+</project>
