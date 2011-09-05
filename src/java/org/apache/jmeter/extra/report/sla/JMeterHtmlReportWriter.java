@@ -38,12 +38,24 @@ public class JMeterHtmlReportWriter {
      */
     private Date lastAccessDate;
 
+    /**
+     * the title of the HTML report as HTML fragment, e.g. "Load Test Results"
+     */
+    private String reportTitle;
+
+    /**
+     * the subtitle of the HTML report as HTML fragment, e.g. "Designed for use with JMeter and Ant"
+     */
+    private String reportSubtitle;
+
     public JMeterHtmlReportWriter(int sortColumn, String sortOrder) {
 
         this.sortColumn = sortColumn;
         this.sortOrder = sortOrder;
         this.firstAccessDate = new Date();
         this.lastAccessDate = new Date(0);
+        this.reportTitle = "Load Test Results";
+        this.reportSubtitle = "Designed for use with <a href=\"http://jakarta.apache.org/jmeter\">JMeter</a> and <a href=\"http://ant.apache.org\">Ant</a>.";
 
         this.failureMap = new HashMap<String, Double>();
     }
@@ -81,6 +93,22 @@ public class JMeterHtmlReportWriter {
         html.append("</html>\n");
 
         return html.toString();
+    }
+
+    public String getReportTitle() {
+        return reportTitle;
+    }
+
+    public void setReportTitle(String reportTitle) {
+        this.reportTitle = reportTitle;
+    }
+
+    public String getReportSubtitle() {
+        return reportSubtitle;
+    }
+
+    public void setReportSubtitle(String reportSubtitle) {
+        this.reportSubtitle = reportSubtitle;
     }
 
     /**
@@ -341,7 +369,7 @@ public class JMeterHtmlReportWriter {
         }
 
 
-        html.append("<h2>JMeter Report Properties</h2>");
+        html.append("<h2>Report Properties</h2>");
         html.append("\n<table width=\"95%\" cellspacing=\"2\" cellpadding=\"5\" border=\"0\" class=\"details\">\n");
         html.append("<tr>");
         html.append("<th>").append("Key").append("</th>");
@@ -420,7 +448,7 @@ public class JMeterHtmlReportWriter {
 
         return "<head>\n" +
                 "<META http-equiv=\"Content-Type\" content=\"text/html; charset=US-ASCII\">\n" +
-                "<title>JMeter Load Test Results</title>\n" +
+                "<title>" + getReportTitle() + "</title>\n" +
                 "<style type=\"text/css\">\n" +
                 "\t\t\t\tbody {\n" +
                 "\t\t\t\t\tfont:normal 68% verdana,arial,helvetica;\n" +
@@ -454,10 +482,10 @@ public class JMeterHtmlReportWriter {
     }
 
     private String getHeaderFragment() {
-        return "<h1>Load Test Results</h1>\n" +
+        return "<h1>" + getReportTitle() + "</h1>\n" +
                 "<table width=\"100%\">\n" +
                 "<tr>\n" +
-                "<td align=\"left\"></td><td align=\"right\">Designed for use with <a href=\"http://jakarta.apache.org/jmeter\">JMeter</a> and <a href=\"http://ant.apache.org\">Ant</a>.</td>\n" +
+                "<td align=\"left\"></td><td align=\"right\">" + getReportSubtitle() + "</td>\n" +
                 "</tr>\n" +
                 "</table>";
     }
