@@ -22,32 +22,23 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
-/**
- * Created by IntelliJ IDEA.
- * User: sgoeschl
- * Date: 01.04.11
- * Time: 15:22
- * To change this template use File | Settings | File Templates.
- */
 public class StaxUtil {
 
-  public static void moveReaderToElement(String target, XMLStreamReader reader) throws XMLStreamException {
+    public static void moveReaderToElement(String target, XMLStreamReader reader) throws XMLStreamException {
 
-    // If current element is equal to target
+        // If current element is equal to target
 
-    String readElement = null;
-    for (int event = reader.next(); event != XMLStreamConstants.END_DOCUMENT; event = reader.next()) {
-
-      if ((event == XMLStreamConstants.START_ELEMENT) && (reader.getLocalName().equals(target))) {
-        return;
-      }
+        for (int event = reader.next(); event != XMLStreamConstants.END_DOCUMENT; event = reader.next()) {
+            if ((event == XMLStreamConstants.START_ELEMENT) && (reader.getLocalName().equals(target))) {
+                return;
+            }
+        }
     }
-  }
 
-  public static void writeElement(XMLStreamWriter writer, String elementName, String value) throws Exception {
-    writer.writeStartElement(elementName);
-    writer.writeCharacters(value);
-    writer.writeEndElement();
-  }
+    public static void writeElement(XMLStreamWriter writer, String elementName, String value) throws XMLStreamException {
+        writer.writeStartElement(elementName);
+        writer.writeCharacters(value);
+        writer.writeEndElement();
+    }
 
 }

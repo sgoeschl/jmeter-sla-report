@@ -17,12 +17,9 @@
  */
 package org.apache.jmeter.extra.report.sla.parser;
 
-import org.apache.jmeter.extra.report.sla.JMeterReportModel;
-import org.apache.jmeter.extra.report.sla.element.AssertionResultElement;
 import org.apache.jmeter.extra.report.sla.element.SampleElement;
 import org.apache.jmeter.extra.report.sla.stax.ComponentParser;
 
-import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import java.util.Date;
 import java.util.Properties;
@@ -31,17 +28,15 @@ import java.util.Stack;
 /**
  * Parses a "sample" element (including httpSample).
  */
-
-public class SampleParser implements ComponentParser {
+public class SampleParser extends AbstractModelParser implements ComponentParser {
 
     /**
      * <httpSample t="4" lt="4" ts="1301400114405" s="true" lb="Reporting.EnumGroupReport" rc="200" rm="OK" tn="CRM 1-2" dt="text" by="2469"/>
-     *
+     * 
      * @param streamReader the Stax stream reader
      * @param elementStack the current element stack
-     * @throws XMLStreamException
      */
-    public Object startElement(XMLStreamReader streamReader, Stack<Object> elementStack) throws XMLStreamException {
+    public Object startElement(XMLStreamReader streamReader, Stack<Object> elementStack) {
 
         // parse attributes of HttpSampler
         Properties attributes = new Properties();
@@ -67,26 +62,9 @@ public class SampleParser implements ComponentParser {
         return sampleElement;
     }
 
-    public void endElement(XMLStreamReader streamReader, Stack<Object> elementStack) throws XMLStreamException {
-
+    public void endElement(XMLStreamReader streamReader, Stack<Object> elementStack) {
         SampleElement sampleElement = (SampleElement) elementStack.peek();
-
-        if (sampleElement.isSuccess()) {
-            JMeterReportModel.addSuccess(sampleElement.getLabel(), sampleElement.getTimestamp(), sampleElement.getDuration());
-        }
-        else {
-
-            String resultCode = sampleElement.getResultCode();
-            String responseMessage = sampleElement.getResponseMessage();
-
-            if(sampleElement.getAssertionResultList().size() > 0) {
-                AssertionResultElement assertionResult = sampleElement.getAssertionResultList().get(0);
-                resultCode = assertionResult.getName();
-                responseMessage = assertionResult.getFailureMessage();
-            }
-
-            JMeterReportModel.addFailure(
-                    sampleElement.getLabel(), sampleElement.getTimestamp(), sampleElement.getDuration(), resultCode, responseMessage);
-        }
+        addElement(sampleElement);
     }
+
 }

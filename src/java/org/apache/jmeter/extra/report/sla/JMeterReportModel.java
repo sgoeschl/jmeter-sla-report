@@ -29,7 +29,7 @@ public class JMeterReportModel {
     /** the units being used */
     public static final String UNIT_MS = "ms.";
     public static final String UNIT_EXCEPTION = "Exception";
-    public static final String UNIT_JMETER_ERRORS="JMeter Errors";
+    public static final String UNIT_JMETER_ERRORS = "JMeter Errors";
 
     static {
         MonitorFactory.setRangeDefault(UNIT_MS, JMeterReportModel.createMSHolder());
@@ -59,7 +59,7 @@ public class JMeterReportModel {
 
     public static void addSuccess(String label, Date timestamp, long duration) {
         Monitor mon = MonitorFactory.getMonitor(label, UNIT_MS).start();
-        if(mon.getFirstAccess().getTime()  == 0) {
+        if (mon.getFirstAccess().getTime() == 0) {
             mon.setFirstAccess(timestamp);
         }
         mon.add(duration);
@@ -69,16 +69,16 @@ public class JMeterReportModel {
 
     public static void addFailure(String label, Date timestamp, long duration, String resultCode, String resultMessage) {
 
-        addSuccess(label, timestamp, duration );
+        addSuccess(label, timestamp, duration);
         Monitor mon = MonitorFactory.getMonitor(label + " - " + resultCode + " - " + resultMessage, UNIT_JMETER_ERRORS);
-        if(mon.getFirstAccess().getTime()  == 0) {
+        if (mon.getFirstAccess().getTime() == 0) {
             mon.setFirstAccess(timestamp);
         }
         mon.add(duration);
         mon.stop();
         mon.setLastAccess(timestamp);
 
-        Object[] details = new Object[] {label, resultCode, resultMessage};
+        Object[] details = new Object[] { label, resultCode, resultMessage };
         MonKeyImp monKey = new MonKeyImp(label, details, UNIT_EXCEPTION);
         MonitorFactory.add(monKey, 1);
         // System.out.println(timestamp + ":" + label + ":" + resultCode + ":" + resultMessage);
