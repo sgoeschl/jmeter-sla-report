@@ -24,20 +24,13 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Stack;
 
-/**
- * Created by IntelliJ IDEA.
- * User: sgoeschl
- * Date: 01.04.11
- * Time: 15:13
- * To change this template use File | Settings | File Templates.
- */
 public class StaxParser {
 
     private Stack<Object> elementStack;
-    private Map delegates;
+    private Map<String, ComponentParser> delegates;
 
     public StaxParser() {
-        delegates = new HashMap();
+        delegates = new HashMap<String, ComponentParser>();
         elementStack = new Stack<Object>();
     }
 
@@ -52,7 +45,7 @@ public class StaxParser {
                 // If a Component Parser is registered that can handle
                 // this localName delegate to parser...
                 if (delegates.containsKey(localName)) {
-                    ComponentParser parser = (ComponentParser) delegates.get(localName);
+                    ComponentParser parser = delegates.get(localName);
                     element = parser.startElement(staxXmlReader, elementStack);
                     elementStack.push(element);
                 }
@@ -61,7 +54,7 @@ public class StaxParser {
                 // If a Component Parser is registered that can handle
                 // this localName delegate to parser...
                 if (delegates.containsKey(localName)) {
-                    ComponentParser parser = (ComponentParser) delegates.get(localName);
+                    ComponentParser parser = delegates.get(localName);
                     parser.endElement(staxXmlReader, elementStack);
                     elementStack.pop();
                 }

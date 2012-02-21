@@ -17,28 +17,30 @@
  */
 package org.apache.jmeter.extra.report.sla.stax;
 
-import javax.xml.stream.XMLStreamConstants;
-import javax.xml.stream.XMLStreamException;
-import javax.xml.stream.XMLStreamReader;
-import javax.xml.stream.XMLStreamWriter;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.Reader;
 
-public class StaxUtil {
+import org.apache.jmeter.extra.report.sla.parser.CSVSampleParser;
 
-    public static void moveReaderToElement(String target, XMLStreamReader reader) throws XMLStreamException {
+public class CsvParser {
 
-        // If current element is equal to target
+    private final CSVSampleParser parser = new CSVSampleParser();
 
-        for (int event = reader.next(); event != XMLStreamConstants.END_DOCUMENT; event = reader.next()) {
-            if ((event == XMLStreamConstants.START_ELEMENT) && (reader.getLocalName().equals(target))) {
-                return;
-            }
+    public void parseCsv(Reader fis) throws IOException {
+        BufferedReader in = new BufferedReader(fis);
+        try {
+            parseLines(in);
+        } finally {
+            in.close();
         }
     }
 
-    public static void writeElement(XMLStreamWriter writer, String elementName, String value) throws XMLStreamException {
-        writer.writeStartElement(elementName);
-        writer.writeCharacters(value);
-        writer.writeEndElement();
+    private void parseLines(BufferedReader in) throws IOException {
+        String line = null;
+        while ((line = in.readLine()) != null) {
+            parser.parse(line);
+        }
     }
 
 }

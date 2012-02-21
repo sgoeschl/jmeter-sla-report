@@ -31,7 +31,6 @@ import java.util.Stack;
  */
 public class AssertionResultParser implements ComponentParser {
 
-
     public Object startElement(XMLStreamReader streamReader, Stack<Object> elementStack) throws XMLStreamException {
 
         AssertionResultElement assertionResultElement = new AssertionResultElement();
@@ -45,7 +44,7 @@ public class AssertionResultParser implements ComponentParser {
         StaxUtil.moveReaderToElement("error", streamReader);
         assertionResultElement.setError(Boolean.parseBoolean(streamReader.getElementText()));
 
-        if(assertionResultElement.isFailure() || assertionResultElement.isError()) {
+        if (assertionResultElement.isFailure() || assertionResultElement.isError()) {
             StaxUtil.moveReaderToElement("failureMessage", streamReader);
             assertionResultElement.setFailureMessage(streamReader.getElementText());
             SampleElement sampleElement = (SampleElement) elementStack.peek();
@@ -55,6 +54,6 @@ public class AssertionResultParser implements ComponentParser {
         return assertionResultElement;
     }
 
-    public void endElement(XMLStreamReader streamReader, Stack<Object> elementStack) throws XMLStreamException {
+    public void endElement(XMLStreamReader streamReader, Stack<Object> elementStack) {
     }
 }

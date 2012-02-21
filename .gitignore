@@ -6,3 +6,6 @@ target/
 *.iws
 *.ipr
 .swp
+/.project
+/.classpath
+/.settings

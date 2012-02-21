@@ -32,7 +32,7 @@ public class SampleElement {
     private String resultCode;
     private String responseMessage;
     private boolean success;
-    private List<AssertionResultElement> assertionResultList = new ArrayList<AssertionResultElement>();
+    private final List<AssertionResultElement> assertionResultList = new ArrayList<AssertionResultElement>();
 
     public long getDuration() {
         return duration;
