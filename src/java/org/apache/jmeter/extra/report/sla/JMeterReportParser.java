@@ -17,17 +17,23 @@
  */
 package org.apache.jmeter.extra.report.sla;
 
-import org.apache.jmeter.extra.report.sla.parser.AssertionResultParser;
-import org.apache.jmeter.extra.report.sla.parser.SampleParser;
-import org.apache.jmeter.extra.report.sla.stax.StaxParser;
-
-import javax.xml.stream.XMLInputFactory;
-import javax.xml.stream.XMLStreamReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FilenameFilter;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.Reader;
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.xml.stream.XMLInputFactory;
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamReader;
+
+import org.apache.jmeter.extra.report.sla.parser.AssertionResultParser;
+import org.apache.jmeter.extra.report.sla.parser.SampleParser;
+import org.apache.jmeter.extra.report.sla.stax.CsvParser;
+import org.apache.jmeter.extra.report.sla.stax.StaxParser;
 
 /**
  * A JMeter XML Report post processor to efficiently process gigabytes of JMeter reports.
@@ -41,31 +47,49 @@ public class JMeterReportParser implements Runnable {
 
     public void run() {
 
-        FileInputStream fis = null;
-        XMLStreamReader xmlStreamReader = null;
-
         XMLInputFactory factory = XMLInputFactory.newInstance();
 
         for (File sourceFile : getSourceFiles()) {
 
+            FileInputStream fis = null;
             try {
-
                 fis = new FileInputStream(sourceFile);
-                xmlStreamReader = factory.createXMLStreamReader(fis);
 
-                StaxParser parser = new StaxParser();
-                parser.registerParser("sample", new SampleParser());
-                parser.registerParser("httpSample", new SampleParser());
-                parser.registerParser("assertionResult", new AssertionResultParser());
-                parser.parseElement(xmlStreamReader);
+                if (sourceFile.getName().endsWith(".csv")) {
+                    parseInputAsCsv(fis);
+                } else {
+                    parseInputAsXml(fis, factory);
+                }
             } catch (Exception e) {
                 System.out.println("Encountered an exception while processing the XML and stop parsing file : " + e.getClass().getName());
                 break;
             } finally {
                 fis = close(fis);
-                xmlStreamReader = close(xmlStreamReader);
             }
 
+        }
+    }
+
+    private void parseInputAsCsv(FileInputStream fis) throws IOException {
+        Reader csvReader = null;
+        csvReader = new InputStreamReader(fis);
+
+        CsvParser parser = new CsvParser();
+        parser.parseCsv(csvReader);
+    }
+
+    private void parseInputAsXml(FileInputStream fis, XMLInputFactory factory) throws XMLStreamException {
+        XMLStreamReader xmlStreamReader = null;
+        try {
+            xmlStreamReader = factory.createXMLStreamReader(fis);
+
+            StaxParser parser = new StaxParser();
+            parser.registerParser("sample", new SampleParser());
+            parser.registerParser("httpSample", new SampleParser());
+            parser.registerParser("assertionResult", new AssertionResultParser());
+            parser.parseElement(xmlStreamReader);
+        } finally {
+            close(xmlStreamReader);
         }
     }
 
@@ -81,7 +105,10 @@ public class JMeterReportParser implements Runnable {
 
                 String[] listedFiles = sourceFile.list(new FilenameFilter() {
                     public boolean accept(File dir, String name) {
-                        return name.endsWith(".jtl");
+                        String lowerName = name.toLowerCase();
+                        boolean isJtl = lowerName.endsWith(".jtl");
+                        boolean isCsv = lowerName.endsWith(".csv");
+                        return isJtl || isCsv;
                     }
                 });
 
@@ -99,7 +126,6 @@ public class JMeterReportParser implements Runnable {
     }
 
     private XMLStreamReader close(XMLStreamReader xmlStreamReader) {
-
         try {
             if (xmlStreamReader != null) {
                 xmlStreamReader.close();
@@ -112,7 +138,6 @@ public class JMeterReportParser implements Runnable {
     }
 
     private FileInputStream close(FileInputStream fis) {
-
         try {
             if (fis != null) {
                 fis.close();
