@@ -44,8 +44,13 @@ public class JMeterReportParser implements Runnable {
      * the JMeter JTL source files
      */
     private List<File> sourceFiles;
+	private final JMeterReportModel model;
 
-    public void run() {
+	public JMeterReportParser(JMeterReportModel model) {
+		this.model = model;
+	}
+
+	public void run() {
 
         XMLInputFactory factory = XMLInputFactory.newInstance();
 
@@ -74,7 +79,7 @@ public class JMeterReportParser implements Runnable {
         Reader csvReader = null;
         csvReader = new InputStreamReader(fis);
 
-        CsvParser parser = new CsvParser();
+        CsvParser parser = new CsvParser(model);
         parser.parseCsv(csvReader);
     }
 
@@ -84,8 +89,8 @@ public class JMeterReportParser implements Runnable {
             xmlStreamReader = factory.createXMLStreamReader(fis);
 
             StaxParser parser = new StaxParser();
-            parser.registerParser("sample", new SampleParser());
-            parser.registerParser("httpSample", new SampleParser());
+            parser.registerParser("sample", new SampleParser(model));
+            parser.registerParser("httpSample", new SampleParser(model));
             parser.registerParser("assertionResult", new AssertionResultParser());
             parser.parseElement(xmlStreamReader);
         } finally {

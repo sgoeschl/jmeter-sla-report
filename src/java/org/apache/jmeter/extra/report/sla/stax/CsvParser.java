@@ -21,12 +21,16 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.Reader;
 
+import org.apache.jmeter.extra.report.sla.JMeterReportModel;
 import org.apache.jmeter.extra.report.sla.parser.CSVSampleParser;
 
 public class CsvParser {
 
-    private final CSVSampleParser parser = new CSVSampleParser();
+    private final CSVSampleParser parser;
 
+    public CsvParser(JMeterReportModel model) {
+    	parser = new CSVSampleParser(model);
+	}
     public void parseCsv(Reader fis) throws IOException {
         BufferedReader in = new BufferedReader(fis);
         try {

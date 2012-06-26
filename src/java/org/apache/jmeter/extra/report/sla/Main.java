@@ -53,15 +53,16 @@ public class Main {
             sourceFiles.add(new File("."));
         }
 
+        JMeterReportModel model = new JMeterReportModel();
         // parse the JMeter JTL file and feed JAMON
-        JMeterReportParser instance = new JMeterReportParser();
+        JMeterReportParser instance = new JMeterReportParser(model);
         instance.setSourceFiles(sourceFiles);
         instance.run();
 
         // create the HTML report and write it to disk
         targetFile.getParentFile().mkdirs();
         BufferedWriter out = new BufferedWriter(new FileWriter(targetFile));
-        out.write(new JMeterHtmlReportWriter(sortColumn, sortOrder).createReport());
+        out.write(new JMeterHtmlReportWriter(model,sortColumn, sortOrder).createReport());
         out.close();
     }
 

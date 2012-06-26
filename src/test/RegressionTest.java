@@ -16,12 +16,6 @@ import junit.framework.TestCase;
 
 public class RegressionTest extends TestCase {
  
-	@Override
-	protected void tearDown() throws Exception {
-		super.tearDown();
-		MonitorFactory.reset();
-	}
-	
 	private static final String MARKER="<h2>Report Properties</h2>";
 	
 	public void testSuccess() throws Exception {
@@ -29,35 +23,40 @@ public class RegressionTest extends TestCase {
 	}
 
 	public void testError() throws Exception {
-		runReportAndCompare("src/test/data/error.jtl", "src/test/data/expected-error-result.html");
+		runReportAndCompare("src/test/data/error.jtl",
+				"src/test/data/expected-error-result.html");
 	}
 
 	public void testIncomplete() throws Exception {
-		runReportAndCompare("src/test/data/incomplete.jtl", "src/test/data/expected-incomplete-result.html");
+		runReportAndCompare("src/test/data/incomplete.jtl",
+				"src/test/data/expected-incomplete-result.html");
 	}
-	
+
 	public void testSuccessCsv() throws Exception {
-		runReportAndCompare("src/test/data/success.csv", "src/test/data/expected-success-csv-result.html");
+		runReportAndCompare("src/test/data/success.csv",
+				"src/test/data/expected-success-csv-result.html");
 	}
-	
-	private void runReportAndCompare(String inputFile, String expectedOutputFile) throws IOException, Exception {
+
+	private void runReportAndCompare(String inputFile, String expectedOutputFile)
+			throws IOException, Exception {
 		File tempFile = File.createTempFile("junit", ".html");
 		tempFile.deleteOnExit();
 
-		Main.main(new String[] { tempFile.getAbsolutePath(),
-				inputFile });
-		
-		
-		Assert.assertEquals(removeRunDependentParts(readAsString(new File(expectedOutputFile))),
+		Main.main(new String[] { tempFile.getAbsolutePath(), inputFile });
+
+		Assert.assertEquals(removeRunDependentParts(readAsString(new File(
+				expectedOutputFile))),
 				removeRunDependentParts(readAsString(tempFile)));
 	}
+
 	private String removeRunDependentParts(String input) {
 		int indexOf = input.indexOf(MARKER);
-		if(indexOf== -1){
+		if (indexOf == -1) {
 			return input;
 		}
 		return input.substring(0, indexOf);
 	}
+
 	private String readAsString(File file) throws IOException {
 		FileInputStream inputStream = new FileInputStream(file);
 		try {
