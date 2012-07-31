@@ -17,6 +17,7 @@
  */
 package org.apache.jmeter.extra.report.sla.parser;
 
+import org.apache.jmeter.extra.report.sla.JMeterReportModel;
 import org.apache.jmeter.extra.report.sla.element.SampleElement;
 import org.apache.jmeter.extra.report.sla.stax.ComponentParser;
 
@@ -30,6 +31,9 @@ import java.util.Stack;
  */
 public class SampleParser extends AbstractModelParser implements ComponentParser {
 
+	public SampleParser(JMeterReportModel model){
+    	super(model);
+    }
     /**
      * <httpSample t="4" lt="4" ts="1301400114405" s="true" lb="Reporting.EnumGroupReport" rc="200" rm="OK" tn="CRM 1-2" dt="text" by="2469"/>
      * 

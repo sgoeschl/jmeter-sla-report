@@ -17,6 +17,7 @@
  */
 package org.apache.jmeter.extra.report.sla.parser;
 
+import org.apache.jmeter.extra.report.sla.JMeterReportModel;
 import org.apache.jmeter.extra.report.sla.element.SampleElement;
 
 import java.util.Date;
@@ -34,6 +35,10 @@ public class CSVSampleParser extends AbstractModelParser {
     private static final int HTTP_MSG_INDEX = 4;
     private static final int STATUS_INDEX = 7;
 
+    public CSVSampleParser(JMeterReportModel model){
+    	super(model);
+    }
+    
     /**
      * 1329852757203,128,Initialize,200,OK,Setup 1-1,text,true,0,0
      * 
