@@ -48,8 +48,11 @@ public class JMeterHtmlReportWriter {
      */
     private String reportSubtitle;
 
-    public JMeterHtmlReportWriter(int sortColumn, String sortOrder) {
+	private final JMeterReportModel model;
 
+    public JMeterHtmlReportWriter(JMeterReportModel model, int sortColumn, String sortOrder) {
+
+    	this.model=model;
         this.sortColumn = sortColumn;
         this.sortOrder = sortOrder;
         this.firstAccessDate = new Date();
@@ -67,7 +70,7 @@ public class JMeterHtmlReportWriter {
      */
     public String createReport() {
 
-        MonitorComposite monitor = MonitorFactory.getRootMonitor();
+        MonitorComposite monitor = model.getProvider().getRoot();
 
         if (!monitor.hasData())
             return "";

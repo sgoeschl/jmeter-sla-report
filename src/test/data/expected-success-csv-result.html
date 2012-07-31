@@ -1,0 +1,79 @@
+<html>
+<head>
+<META http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<title>Load Test Results</title>
+<style type="text/css">
+				body {
+					font:normal 68% verdana,arial,helvetica;
+					color:#000000;
+				}
+				table tr td, table tr th {
+					font-size: 68%;
+				}
+				table.details tr th{
+					font-weight: bold;
+					text-align:left;
+					background:#a6caf0;
+				}
+				table.details tr td{
+					background:#eeeee0;
+				}
+				h1 {
+					margin: 0px 0px 5px; font: 165% verdana,arial,helvetica
+				}
+				h2 {
+					margin-top: 1em; margin-bottom: 0.5em; font: bold 125% verdana,arial,helvetica
+				}
+				h3 {
+					margin-bottom: 0.5em; font: bold 115% verdana,arial,helvetica
+				}
+				.Failure {
+					font-weight:bold; color:red;
+				}
+			</style>
+</head>
+<body>
+<h1>Load Test Results</h1>
+<table width="100%">
+<tr>
+<td align="left"></td><td align="right">Designed for use with <a href="http://jakarta.apache.org/jmeter">JMeter</a> and <a href="http://ant.apache.org">Ant</a>.</td>
+</tr>
+</table><hr size="1"><h2>Summary</h2><table width="95%" cellspacing="2" cellpadding="5" border="0" class="details">
+<tr valign="top">
+<th>Tests</th><th>Failures</th><th>Success Rate</th><th>Average Time</th><th>Min Time</th><th>Max Time</th>
+</tr>
+<tr valign="top" class="">
+<td>194</td><td>0</td><td>100.0000 %</td><td>        16 ms</td><td>         3 ms</td><td>       128 ms</td></tr></table>
+<hr size="1"><h2>Pages Overview (ms)</h2>
+<table width="95%" cellspacing="2" cellpadding="5" border="0" class="details">
+<tr><th>Label</th><th>Tests</th><th>Avg</th><th>Total</th><th>StdDev</th><th>Min Time</th><th>Max Time</th><th>First Access</th><th>Last Acccess</th><th>Failures</th></tr>
+<tr valign="top" class=""><td>Initialize</td><td align='right'>         1</td><td align='right'>       128</td><td align='right'>       128</td><td align='right'>         0</td><td align='right'>       128</td><td align='right'>       128</td><td align='right'>20:32:37</td><td align='right'>20:32:37</td><td align='right'>         0</td></tr>
+<tr valign="top" class=""><td>Video:InsertTollTransactions</td><td align='right'>        50</td><td align='right'>         8</td><td align='right'>       377</td><td align='right'>         4</td><td align='right'>         5</td><td align='right'>        32</td><td align='right'>20:32:38</td><td align='right'>20:32:47</td><td align='right'>         0</td></tr>
+<tr valign="top" class=""><td>Video:InsertVehiclePassage</td><td align='right'>        50</td><td align='right'>         8</td><td align='right'>       406</td><td align='right'>         1</td><td align='right'>         6</td><td align='right'>        13</td><td align='right'>20:32:38</td><td align='right'>20:32:47</td><td align='right'>         0</td></tr>
+<tr valign="top" class=""><td>Video:InsertImages</td><td align='right'>        50</td><td align='right'>        36</td><td align='right'>     1,794</td><td align='right'>         6</td><td align='right'>        26</td><td align='right'>        54</td><td align='right'>20:32:38</td><td align='right'>20:32:47</td><td align='right'>         0</td></tr>
+<tr valign="top" class=""><td>OBU:InsertTollTransactions</td><td align='right'>        21</td><td align='right'>         6</td><td align='right'>       132</td><td align='right'>         1</td><td align='right'>         5</td><td align='right'>         8</td><td align='right'>20:32:38</td><td align='right'>20:32:47</td><td align='right'>         0</td></tr>
+<tr valign="top" class=""><td>OBU:InsertVehiclePassage</td><td align='right'>        21</td><td align='right'>         8</td><td align='right'>       168</td><td align='right'>         1</td><td align='right'>         6</td><td align='right'>         9</td><td align='right'>20:32:38</td><td align='right'>20:32:47</td><td align='right'>         0</td></tr>
+<tr valign="top" class=""><td>Dispose</td><td align='right'>         1</td><td align='right'>         3</td><td align='right'>         3</td><td align='right'>         0</td><td align='right'>         3</td><td align='right'>         3</td><td align='right'>20:32:48</td><td align='right'>20:32:48</td><td align='right'>         0</td></tr>
+</table>
+<hr size="1"><h2>Pages Detail Table (ms)</h2>
+<table width="95%" cellspacing="2" cellpadding="5" border="0" class="details">
+<tr><th>Label</th><th>Tests</th><th>0-10</th><th>10-20</th><th>20-40</th><th>40-80</th><th>80-160</th><th>160-320</th><th>320-640</th><th>640-1280</th><th>1280-2560</th><th>2560-5120</th><th>5120-10240</th><th>10240-20480</th><th>>20480ms</th></tr><tr valign="top"><td>Initialize</td><td align='right'>         1</td><td align='right'></td><td align='right'></td><td align='right'></td><td align='right'></td><td align='right'>1/128 </td><td align='right'></td><td align='right'></td><td align='right'></td><td align='right'></td><td align='right'></td><td align='right'></td><td align='right'></td><td align='right'></td></tr>
+<tr valign="top"><td>Video:InsertTollTransactions</td><td align='right'>        50</td><td align='right'>47/6.9 </td><td align='right'>2/11.5 </td><td align='right'>1/32 </td><td align='right'></td><td align='right'></td><td align='right'></td><td align='right'></td><td align='right'></td><td align='right'></td><td align='right'></td><td align='right'></td><td align='right'></td><td align='right'></td></tr>
+<tr valign="top"><td>Video:InsertVehiclePassage</td><td align='right'>        50</td><td align='right'>45/7.8 </td><td align='right'>5/10.8 </td><td align='right'></td><td align='right'></td><td align='right'></td><td align='right'></td><td align='right'></td><td align='right'></td><td align='right'></td><td align='right'></td><td align='right'></td><td align='right'></td><td align='right'></td></tr>
+<tr valign="top"><td>Video:InsertImages</td><td align='right'>        50</td><td align='right'></td><td align='right'></td><td align='right'>39/33.2 </td><td align='right'>11/45.5 </td><td align='right'></td><td align='right'></td><td align='right'></td><td align='right'></td><td align='right'></td><td align='right'></td><td align='right'></td><td align='right'></td><td align='right'></td></tr>
+<tr valign="top"><td>OBU:InsertTollTransactions</td><td align='right'>        21</td><td align='right'>21/6.3 </td><td align='right'></td><td align='right'></td><td align='right'></td><td align='right'></td><td align='right'></td><td align='right'></td><td align='right'></td><td align='right'></td><td align='right'></td><td align='right'></td><td align='right'></td><td align='right'></td></tr>
+<tr valign="top"><td>OBU:InsertVehiclePassage</td><td align='right'>        21</td><td align='right'>21/8 </td><td align='right'></td><td align='right'></td><td align='right'></td><td align='right'></td><td align='right'></td><td align='right'></td><td align='right'></td><td align='right'></td><td align='right'></td><td align='right'></td><td align='right'></td><td align='right'></td></tr>
+<tr valign="top"><td>Dispose</td><td align='right'>         1</td><td align='right'>1/3 </td><td align='right'></td><td align='right'></td><td align='right'></td><td align='right'></td><td align='right'></td><td align='right'></td><td align='right'></td><td align='right'></td><td align='right'></td><td align='right'></td><td align='right'></td><td align='right'></td></tr>
+</table>
+<hr size="1"><hr size="1"><hr size="1"><h2>Report Properties</h2>
+<table width="95%" cellspacing="2" cellpadding="5" border="0" class="details">
+<tr><th>Key</th><th>Value</th></tr><tr valign="top" class=""><td>Test Start Date</td><td>Tue Feb 21 20:32:37 CET 2012</td></tr>
+<tr valign="top" class=""><td>Test End Date</td><td>Tue Feb 21 20:32:48 CET 2012</td></tr>
+<tr valign="top" class=""><td>Test Duration (sec)</td><td>        11</td></tr>
+<tr valign="top" class=""><td>Report Creation Date</td><td>Tue Jun 26 21:31:32 CEST 2012</td></tr>
+<tr valign="top" class=""><td>host.name</td><td>snotra</td></tr>
+<tr valign="top" class=""><td>host.address</td><td>127.0.1.1</td></tr>
+<tr valign="top" class=""><td>user.name</td><td>mattk</td></tr>
+</table>
+</body>
+</html>

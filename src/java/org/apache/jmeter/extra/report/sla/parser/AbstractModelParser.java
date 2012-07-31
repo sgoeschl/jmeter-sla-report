@@ -21,12 +21,18 @@ import org.apache.jmeter.extra.report.sla.JMeterReportModel;
 import org.apache.jmeter.extra.report.sla.element.AssertionResultElement;
 import org.apache.jmeter.extra.report.sla.element.SampleElement;
 
-public class AbstractModelParser {
+public abstract class AbstractModelParser {
+	final JMeterReportModel model;
+	
+	public AbstractModelParser(JMeterReportModel model){
+		this.model=model;
+	}
+	
 
     protected void addElement(SampleElement sampleElement) {
 
         if (sampleElement.isSuccess()) {
-            JMeterReportModel.addSuccess(sampleElement.getLabel(), sampleElement.getTimestamp(), sampleElement.getDuration());
+            model.addSuccess(sampleElement.getLabel(), sampleElement.getTimestamp(), sampleElement.getDuration());
         } else {
 
             String resultCode = sampleElement.getResultCode();
@@ -38,7 +44,7 @@ public class AbstractModelParser {
                 responseMessage = assertionResult.getFailureMessage();
             }
 
-            JMeterReportModel.addFailure(sampleElement.getLabel(), sampleElement.getTimestamp(), sampleElement.getDuration(), resultCode,
+            model.addFailure(sampleElement.getLabel(), sampleElement.getTimestamp(), sampleElement.getDuration(), resultCode,
                     responseMessage);
         }
     }
