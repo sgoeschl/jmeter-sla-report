@@ -8,8 +8,8 @@
   </assertionResult>
   <assertionResult>
     <name>Response Assertion</name>
-    <failure>false</failure>
-    <error>true</error>
+    <failure>true</failure>
+    <error>false</error>
     <failureMessage>Test failed: text expected to contain /&gt;lsOk&lt;/</failureMessage>
   </assertionResult>
 </httpSample>

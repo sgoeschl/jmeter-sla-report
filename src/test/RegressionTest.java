@@ -1,18 +1,14 @@
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.IOError;
 import java.io.IOException;
 import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
 import java.nio.charset.Charset;
 
-import org.apache.jmeter.extra.report.sla.Main;
-
-import com.jamonapi.MonitorFactory;
-
 import junit.framework.Assert;
 import junit.framework.TestCase;
+
+import org.apache.jmeter.extra.report.sla.Main;
 
 public class RegressionTest extends TestCase {
  
@@ -26,6 +22,12 @@ public class RegressionTest extends TestCase {
 		runReportAndCompare("src/test/data/error.jtl",
 				"src/test/data/expected-error-result.html");
 	}
+	
+	public void testFailure() throws Exception {
+		runReportAndCompare("src/test/data/failure.jtl",
+				"src/test/data/expected-failure-result.html");
+	}
+
 
 	public void testIncomplete() throws Exception {
 		runReportAndCompare("src/test/data/incomplete.jtl",

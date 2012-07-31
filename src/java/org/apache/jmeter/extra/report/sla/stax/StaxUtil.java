@@ -20,7 +20,6 @@ package org.apache.jmeter.extra.report.sla.stax;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
-import javax.xml.stream.XMLStreamWriter;
 
 public class StaxUtil {
 
@@ -35,10 +34,5 @@ public class StaxUtil {
         }
     }
 
-    public static void writeElement(XMLStreamWriter writer, String elementName, String value) throws XMLStreamException {
-        writer.writeStartElement(elementName);
-        writer.writeCharacters(value);
-        writer.writeEndElement();
-    }
-
+ 
 }
