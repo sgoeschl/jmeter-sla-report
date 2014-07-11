@@ -6,12 +6,12 @@
 	@author Siegfried Goeschl
 -->
 
-<project name="crm-monitoring" default="" basedir="." xmlns:contrib="antlib:net.sf.antcontrib">
+<project name="jmeter-sla-report" default="" basedir="." xmlns:contrib="antlib:net.sf.antcontrib">
 
   <!-- import shell environment as env.*-->
   <property environment="env"/>
 
-  <!-- load the user specific properties -->
+  <!-- load the optional user specific properties -->
   <property file="user.properties"/>
 
   <!-- load the project specific properties -->
@@ -20,53 +20,46 @@
   <!-- the directory where generated output goes -->
   <property name="project.build.directory" value="${basedir}/target" />
 
-  <!-- the JMeter JTL file to process -->
-  <property name="jmeter.jtl.file" value="callcenter.jtl" />
-
   <!-- setup the class path to run the report -->
   <path id="project.class.path">
     <fileset dir="${basedir}/lib">
       <include name="*.jar"/>
     </fileset>    
+    <fileset dir="${basedir}/target">
+      <include name="*.jar"/>
+    </fileset>        
   </path>		
       
   <!-- =================================================================== -->
   <!-- General                                                             -->
   <!-- =================================================================== -->
-
-  <target name="clean" description="clean the project">
-    <delete dir="${project.build.directory}"/>        
-  </target>
-
-  <target name="report" description="display current project configuration">
-      <mkdir dir="${project.build.directory}"/>
-      <echo>Processing the following file : ${jmeter.jtl.file}</echo>
-      <echo>The result will be stored here : ${project.build.directory}/jmeter-report.html</echo>      
-      <java classname="org.apache.jmeter.extra.report.sla.Main">
-        <classpath>
-            <fileset dir="${basedir}/lib">
-              <include name="**/*.jar"/>
-            </fileset>
-        </classpath>
-        <arg value="${project.build.directory}/jmeter-report.html"/>        
-        <arg value="${jmeter.jtl.file}"/>
-      </java>        
-  </target>
   
-  <target name="report-all" description="display current project configuration">
+  <target name="test" description="Run the tests to generate JMeter SLA reports" depends="report-xml-success,report-csv-success,report-xml-failure"/>  
+
+  <target name="report-xml-success" description="Report with XML JMeter file">
       <mkdir dir="${project.build.directory}"/>
-      <echo>Processing the following file : ${jmeter.jtl.file}</echo>
-      <echo>The result will be stored here : ${project.build.directory}/jmeter-report.html</echo>      
-      <java classname="org.apache.jmeter.extra.report.sla.Main">
-        <classpath>
-            <fileset dir="${basedir}/lib">
-              <include name="**/*.jar"/>
-            </fileset>
-        </classpath>
-        <arg value="${project.build.directory}/jmeter-report.html"/>        
-        <arg value="callcenter-1.jtl"/>
-        <arg value="callcenter-2.jtl"/>
-        <arg value="callcenter-3.jtl"/>
+      <java classname="org.apache.jmeter.extra.report.sla.Main" classpathref="project.class.path">
+        <arg value="${project.build.directory}/report-xml-success.html"/>        
+        <arg value="${basedir}/src/test/data/success.jtl"/>
+        <sysproperty key="jmeter.something" value="report-xml-success"/>
+      </java>        
+  </target>  
+
+  <target name="report-csv-success" description="Report with CSV JMeter file">
+      <mkdir dir="${project.build.directory}"/>
+      <java classname="org.apache.jmeter.extra.report.sla.Main" classpathref="project.class.path">
+        <arg value="${project.build.directory}/report-csv-success.html"/>        
+        <arg value="${basedir}/src/test/data/success.csv"/>
+        <sysproperty key="jmeter.something" value="report-csv-success"/>        
+      </java>        
+  </target>  
+
+  <target name="report-xml-failure" description="Report with XML JMeter file having test failures">
+      <mkdir dir="${project.build.directory}"/>
+      <java classname="org.apache.jmeter.extra.report.sla.Main" classpathref="project.class.path">
+        <arg value="${project.build.directory}/report-xml-failure.html"/>        
+        <arg value="${basedir}/src/test/data/failure.jtl"/>
+        <sysproperty key="jmeter.something" value="report-xml-failure"/>        
       </java>        
   </target>  
   
