@@ -30,7 +30,7 @@ public class Main {
 
     public static void main(String args[]) throws Exception {
 
-        int sortColumn = 12;
+        int sortColumn = JMeterHtmlReportWriter.DISPLAY_HEADER_FIRSTACCESS_INDEX;
         String sortOrder = "asc";
         File targetFile = new File(args[0]);
         List<File> sourceFiles = new ArrayList<File>();
@@ -46,7 +46,6 @@ public class Main {
             else {
                 sourceFiles.add(sourceFile);
             }
-
         }
 
         if(args.length == 1) {

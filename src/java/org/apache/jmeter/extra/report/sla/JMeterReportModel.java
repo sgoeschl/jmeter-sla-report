@@ -26,7 +26,7 @@ import java.util.Date;
  */
 public class JMeterReportModel {
 
-    /** the units being used */
+    // the units being used
     public static final String UNIT_MS = "ms.";
     public static final String UNIT_EXCEPTION = "Exception";
     public static final String UNIT_JMETER_ERRORS = "JMeter Errors";
