@@ -50,7 +50,8 @@
       <java classname="org.apache.jmeter.extra.report.sla.Main" classpathref="project.class.path">
         <arg value="${project.build.directory}/report-csv-success.html"/>        
         <arg value="${basedir}/src/test/data/success.csv"/>
-        <sysproperty key="jmeter.something" value="report-csv-success"/>        
+        <sysproperty key="jmeter.something" value="report-csv-success"/> 		
+		<sysproperty key="jmeter.jtl.has_header" value="${jmeter.jtl.has_header}"/>		
       </java>        
   </target>  
 
