@@ -20,12 +20,22 @@ package org.apache.jmeter.extra.report.sla.parser;
 import org.apache.jmeter.extra.report.sla.JMeterReportModel;
 import org.apache.jmeter.extra.report.sla.element.SampleElement;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Parses an CSV line.
  */
 public class CSVSampleParser extends AbstractModelParser {
+
+    private static final String DURATION_HEADER = "elapsed";
+    private static final String TIMESTAMP_HEADER = "timeStamp";
+    private static final String LABEL_HEADER = "label";
+    private static final String HTTP_CODE_HEADER = "responseCode";
+    private static final String HTTP_MSG_HEADER = "responseMessage";
+    private static final String STATUS_HEADER = "success";
 
     // time, exectime msec, sampler nanme, http status, http msg, thread name, ?, success, ?, ? 
     private static final int DURATION_INDEX = 1;
@@ -35,8 +45,14 @@ public class CSVSampleParser extends AbstractModelParser {
     private static final int HTTP_MSG_INDEX = 4;
     private static final int STATUS_INDEX = 7;
 
+    private List<String> sampleHeader = new ArrayList<String>();
+
     public CSVSampleParser(JMeterReportModel model){
     	super(model);
+    }
+
+    public void parseHeader(String header) {
+        sampleHeader = Arrays.asList(header.split(","));
     }
     
     /**
@@ -45,6 +61,33 @@ public class CSVSampleParser extends AbstractModelParser {
      * @param line the line in the CSV
      */
     public void parse(String line) {
+        if (sampleHeader.size() > 0)
+            parseWithHeader(line);
+        else
+            parseWithoutHeader(line);
+    }
+
+    protected void parseWithHeader(String line) {
+        String[] parts = line.split(",");
+
+        int durationHeaderIndex = sampleHeader.indexOf(DURATION_HEADER);
+        int timestampHeaderIndex = sampleHeader.indexOf(TIMESTAMP_HEADER);
+        int labelHeaderIndex = sampleHeader.indexOf(LABEL_HEADER);
+        int httpCodeHeaderIndex = sampleHeader.indexOf(HTTP_CODE_HEADER);
+        int httpMessageHeaderIndex = sampleHeader.indexOf(HTTP_MSG_HEADER);
+        int statusHeaderIndex = sampleHeader.indexOf(STATUS_HEADER);
+
+        int duration = Integer.parseInt(parts[durationHeaderIndex]);
+        Date timestamp = new Date(Long.parseLong(parts[timestampHeaderIndex]));
+        String label = parts[labelHeaderIndex];
+        String resultCode = parts[httpCodeHeaderIndex];
+        String responseMessage = httpMessageHeaderIndex > -1? parts[httpMessageHeaderIndex] : "N/A";
+        boolean success = Boolean.valueOf(parts[statusHeaderIndex]);
+
+        addSampleElement(duration, timestamp, label, resultCode, responseMessage, success);
+    }
+
+    protected void parseWithoutHeader(String line) {
         String[] parts = line.split(",");
 
         int duration = Integer.parseInt(parts[DURATION_INDEX]);
@@ -54,6 +97,10 @@ public class CSVSampleParser extends AbstractModelParser {
         String responseMessage = parts[HTTP_MSG_INDEX];
         boolean success = Boolean.valueOf(parts[STATUS_INDEX]);
 
+        addSampleElement(duration, timestamp, label, resultCode, responseMessage, success);
+    }
+
+    protected void addSampleElement(int duration, Date timestamp, String label, String resultCode, String responseMessage, boolean success) {
         SampleElement sampleElement = new SampleElement();
         sampleElement.setDuration(duration);
         sampleElement.setTimestamp(timestamp);
@@ -64,5 +111,4 @@ public class CSVSampleParser extends AbstractModelParser {
 
         addElement(sampleElement);
     }
-
 }

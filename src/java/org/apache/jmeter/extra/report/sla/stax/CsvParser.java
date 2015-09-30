@@ -17,22 +17,26 @@
  */
 package org.apache.jmeter.extra.report.sla.stax;
 
+import org.apache.jmeter.extra.report.sla.JMeterReportModel;
+import org.apache.jmeter.extra.report.sla.parser.CSVSampleParser;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.Reader;
 
-import org.apache.jmeter.extra.report.sla.JMeterReportModel;
-import org.apache.jmeter.extra.report.sla.parser.CSVSampleParser;
-
 public class CsvParser {
 
+    private static final String JTL_HAS_HEADER_PROPERTY = "jmeter.jtl.has_header";
+
     private final CSVSampleParser parser;
+    private boolean hasHeader;
 
     public CsvParser(JMeterReportModel model) {
     	parser = new CSVSampleParser(model);
 	}
     public void parseCsv(Reader fis) throws IOException {
         BufferedReader in = new BufferedReader(fis);
+        hasHeader = Boolean.valueOf(System.getProperty(JTL_HAS_HEADER_PROPERTY));
         try {
             parseLines(in);
         } finally {
@@ -42,6 +46,10 @@ public class CsvParser {
 
     private void parseLines(BufferedReader in) throws IOException {
         String line = null;
+        if (hasHeader) {
+            line = in.readLine();
+            parser.parseHeader(line);
+        }
         while ((line = in.readLine()) != null) {
             parser.parse(line);
         }
