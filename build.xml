@@ -6,7 +6,7 @@
 	@author Siegfried Goeschl
 -->
 
-<project name="jmeter-sla-report" default="" basedir="." xmlns:contrib="antlib:net.sf.antcontrib">
+<project name="jmeter-sla-report" default="test" basedir="." xmlns:contrib="antlib:net.sf.antcontrib">
 
   <!-- import shell environment as env.*-->
   <property environment="env"/>

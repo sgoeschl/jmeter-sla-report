@@ -69,14 +69,14 @@ public class JMeterReportParser implements Runnable {
                 System.out.println("Encountered an exception while processing the XML and stop parsing file : " + e.getClass().getName());
                 break;
             } finally {
-                fis = close(fis);
+                close(fis);
             }
 
         }
     }
 
     private void parseInputAsCsv(FileInputStream fis) throws IOException {
-        Reader csvReader = null;
+        Reader csvReader;
         csvReader = new InputStreamReader(fis);
 
         CsvParser parser = new CsvParser(model);
@@ -100,7 +100,7 @@ public class JMeterReportParser implements Runnable {
 
     public List<File> getSourceFiles() {
 
-        List<File> result = new ArrayList<File>();
+        List<File> result = new ArrayList<>();
 
         for (File sourceFile : sourceFiles) {
 

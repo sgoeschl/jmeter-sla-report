@@ -33,7 +33,7 @@ public class Main {
         int sortColumn = JMeterHtmlReportWriter.DISPLAY_HEADER_FIRSTACCESS_INDEX;
         String sortOrder = "asc";
         File targetFile = new File(args[0]);
-        List<File> sourceFiles = new ArrayList<File>();
+        List<File> sourceFiles = new ArrayList<>();
 
         for(int i=1; i<args.length; i++) {
 

@@ -4,7 +4,6 @@ import com.jamonapi.FactoryEnabled;
 import com.jamonapi.MonKey;
 import com.jamonapi.Monitor;
 import com.jamonapi.MonitorComposite;
-import com.jamonapi.MonitorFactory;
 import com.jamonapi.MonitorFactoryInterface;
 import com.jamonapi.RangeHolder;
 
