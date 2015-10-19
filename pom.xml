@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>at.it20one.service</groupId>
     <artifactId>jmeter-sla-report</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>1.0.0</version>
     <name>JMeter Report</name>
     <inceptionYear>2011</inceptionYear>
     <description>A fast JMeter reporing backend</description>
@@ -12,7 +12,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <java.version>1.7</java.version>
     </properties>
-        
+
     <dependencies>
         <dependency>
             <groupId>com.jamonapi</groupId>
