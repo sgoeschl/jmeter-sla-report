@@ -32,6 +32,10 @@ whereas the following JMeter SLA reports are generated
 * ./target/report-csv-success.html
 * ./target/report-xml-failure.html
 
+Afterwards you see a report similiar to the image below
+
+![alt text](./src/site/images/access-log-sla-report.png "HTML Report")
+
 ## 3. ANT Integration
 
 The following snippet is used to generate the JMeter SLA report
