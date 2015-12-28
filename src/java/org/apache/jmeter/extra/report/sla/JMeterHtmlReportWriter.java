@@ -1,8 +1,5 @@
 package org.apache.jmeter.extra.report.sla;
 
-import com.jamonapi.MonitorComposite;
-import com.jamonapi.utils.Misc;
-
 import java.net.InetAddress;
 import java.util.ArrayList;
 import java.util.Date;
@@ -12,8 +9,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
+import com.jamonapi.MonitorComposite;
+import com.jamonapi.utils.Misc;
+
 /**
- * Generates a JMeter style HTML report based on the JAMON
+ * Generates a JMeter style HTML report based on the JAMon
  * performance monitor.
  */
 public class JMeterHtmlReportWriter {
@@ -22,13 +22,47 @@ public class JMeterHtmlReportWriter {
     public static final int DISPLAY_HEADER_LABEL_INDEX = 1;
     public static final int DISPLAY_HEADER_UNITS_INDEX = 2;
     public static final int DISPLAY_HEADER_HITS_INDEX = 3;
-    public static final int DISPLAY_HEADER_AVG_INDEX = 4;
-    public static final int DISPLAY_HEADER_TOTAL_INDEX = 5;
-    public static final int DISPLAY_HEADER_STDDEV_INDEX = 6;
-    public static final int DISPLAY_HEADER_MIN_INDEX = 8;
-    public static final int DISPLAY_HEADER_MAX_INDEX = 9;
     public static final int DISPLAY_HEADER_FIRSTACCESS_INDEX = 13;
     public static final int DISPLAY_HEADER_LASTACCESS_INDEX = 14;
+
+    enum BasicDataColumns
+    {
+        LABEL(1, "Label", true),
+        UNITS(2, "Units", false),
+        HITS(3, "Tests", true),
+        AVG(4, "Avg", true),
+        TOTAL(5, "Total", true),
+        STDEV(6, "StdDev", true),
+        MIN_TIME(8, "Min Time", true),
+        MAX_TIME(9,"Max Time", true),
+        FIRST_ACCESS(13,"First Access", true),
+        LAST_ACCESS(14,"Last Acccess", true);
+
+        int index;
+        String label;
+        boolean isReported;
+
+        BasicDataColumns(int index, String label, boolean isReported)
+        {
+            this.index = index;
+            this.label = label;
+            this.isReported = isReported;
+        }
+
+        static List<BasicDataColumns> getReportedColumns() {
+            List<BasicDataColumns> result = new ArrayList<>();
+            for(BasicDataColumns value : BasicDataColumns.values()) {
+                if(value.isReported) {
+                    result.add(value);
+                }
+            }
+            return result;
+        }
+    }
+
+    enum DisplayDataColumns
+    {
+    }
 
     /**
      * the JAMON column used for sorting
@@ -77,7 +111,7 @@ public class JMeterHtmlReportWriter {
         this.reportTitle = "Load Test Results";
         this.reportSubtitle = "Designed for use with <a href=\"http://jakarta.apache.org/jmeter\">JMeter</a> and <a href=\"http://ant.apache.org\">Ant</a>.";
 
-        this.failureMap = new HashMap<String, Double>();
+        this.failureMap = new HashMap<>();
     }
 
     /**
@@ -132,7 +166,7 @@ public class JMeterHtmlReportWriter {
     }
 
     /**
-     * Helper method to correctly format the JAMON report fields.
+     * Helper method to correctly format the JAMon report fields.
      *
      * @param data the data field
      * @return the formatted field
@@ -188,8 +222,8 @@ public class JMeterHtmlReportWriter {
         // determine the "Failures"
         Double nrOfFailures = 0.0;
         for (Object[] anExceptionData : exceptionData) {
-            String currLLabel = anExceptionData[DISPLAY_HEADER_LABEL_INDEX].toString();
-            Double currHits = (Double) anExceptionData[DISPLAY_HEADER_TOTAL_INDEX];
+            String currLLabel = anExceptionData[BasicDataColumns.LABEL.index].toString();
+            Double currHits = (Double) anExceptionData[BasicDataColumns.TOTAL.index];
             this.failureMap.put(currLLabel, currHits);
             nrOfFailures += currHits;
         }
@@ -241,30 +275,30 @@ public class JMeterHtmlReportWriter {
 
     private void writePagesOverviewTable(StringBuffer html, MonitorComposite monitor, int sortCol, String sortOrder) {
 
-        String[] header = {"Label", "Tests", "Avg", "Total", "StdDev", "Min Time", "Max Time", "First Access", "Last Acccess"};
-        int[] headerIndex = {DISPLAY_HEADER_LABEL_INDEX, DISPLAY_HEADER_HITS_INDEX, DISPLAY_HEADER_AVG_INDEX, DISPLAY_HEADER_TOTAL_INDEX, DISPLAY_HEADER_STDDEV_INDEX, DISPLAY_HEADER_MIN_INDEX, DISPLAY_HEADER_MAX_INDEX, DISPLAY_HEADER_FIRSTACCESS_INDEX,DISPLAY_HEADER_LASTACCESS_INDEX};
-
+        List<BasicDataColumns> reportColumns = BasicDataColumns.getReportedColumns();
         Object[][] data = Misc.sort(getBasicData(monitor, JMeterReportModel.UNIT_MS), sortCol, sortOrder);
         int rows = data.length;
-        int cols = header.length;
+        int cols = reportColumns.size();
 
         html.append("<h2>Pages Overview (ms)</h2>");
         html.append("\n<table width=\"95%\" cellspacing=\"2\" cellpadding=\"5\" border=\"0\" class=\"details\">\n");
         html.append("<tr>");
-        for (String headerName : header) {
-            html.append("<th>").append(headerName).append("</th>");
+        for (BasicDataColumns column : reportColumns) {
+            html.append("<th>").append(column.label).append("</th>");
         }
         html.append("<th>").append("Failures").append("</th>");
         html.append("</tr>\n");
 
         for (int i = 0; i < rows; i++) {
-            String label = data[i][DISPLAY_HEADER_LABEL_INDEX].toString();
+            String label = data[i][BasicDataColumns.LABEL.index].toString();
             double nrOfFailures = getNrOfFailures(label);
             String failureClass = (nrOfFailures > 0.0 ? "Failure" : "");
             html.append("<tr valign=\"top\" class=\"" + failureClass + "\">");
             html.append("<td>").append(label).append("</td>");// first column
             for (int j = 1; j < cols; j++) {
-                html.append("<td align='right'>").append(format(data[i][headerIndex[j]])).append("</td>");
+                html.append("<td align='right'>");
+                html.append(format(data[i][reportColumns.get(j).index]));
+                html.append("</td>");
             }
             html.append("<td align='right'>").append(format(nrOfFailures)).append("</td>");
             html.append("</tr>\n");
@@ -275,7 +309,6 @@ public class JMeterHtmlReportWriter {
 
     private void writePagesDetailTable(StringBuffer html, MonitorComposite monitor, int sortCol, String sortOrder) {
 
-        String foo[] = monitor.getDisplayHeader();
         String[] header = {"Label", "Tests", "0-10", "10-20", "20-40", "40-80", "80-160", "160-320", "320-640", "640-1280", "1280-2560", "2560-5120", "5120-10240", "10240-20480", ">20480ms"};
         int[] headerIndex = {DISPLAY_HEADER_LABEL_INDEX, DISPLAY_HEADER_HITS_INDEX, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30};
 
@@ -314,7 +347,7 @@ public class JMeterHtmlReportWriter {
 
         Object[][] rawData = getDisplayData(monitor, JMeterReportModel.UNIT_JMETER_ERRORS);
 
-        if(hasFailures(rawData) == false)
+        if(!hasFailures(rawData))
         {
             return;
         }
@@ -354,7 +387,7 @@ public class JMeterHtmlReportWriter {
 
         Object[][] rawData = getBasicData(monitor, JMeterReportModel.UNIT_EXCEPTION);
 
-        if(hasFailures(rawData) == false)
+        if(!hasFailures(rawData))
         {
             return;
         }
@@ -519,7 +552,7 @@ public class JMeterHtmlReportWriter {
     }
 
     private Object[][] getDisplayData(MonitorComposite monitor, String unit) {
-        List<Object[]> result = new ArrayList<Object[]>();
+        List<Object[]> result = new ArrayList<>();
         for (Object[] currData : monitor.getDisplayData()) {
             if (currData[DISPLAY_HEADER_UNITS_INDEX].toString().equals(unit)) {
                 result.add(currData);
@@ -529,7 +562,7 @@ public class JMeterHtmlReportWriter {
     }
 
     private Object[][] getBasicData(MonitorComposite monitor, String unit) {
-        List<Object[]> result = new ArrayList<Object[]>();
+        List<Object[]> result = new ArrayList<>();
         for (Object[] currData : monitor.getDisplayData()) {
             if (currData[DISPLAY_HEADER_UNITS_INDEX].toString().equals(unit)) {
                 result.add(currData);
@@ -551,10 +584,6 @@ public class JMeterHtmlReportWriter {
         }
 
         int rows = data.length;
-
-        if (rows == 0) {
-            return false;
-        }
 
         double nrOfFirstError = (Double) (data[0][DISPLAY_HEADER_HITS_INDEX]);
 

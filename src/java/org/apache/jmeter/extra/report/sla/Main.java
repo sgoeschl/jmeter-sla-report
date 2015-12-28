@@ -53,7 +53,7 @@ public class Main {
         }
 
         JMeterReportModel model = new JMeterReportModel();
-        // parse the JMeter JTL file and feed JAMON
+        // parse the JMeter JTL file and feed JAMon
         JMeterReportParser instance = new JMeterReportParser(model);
         instance.setSourceFiles(sourceFiles);
         instance.run();

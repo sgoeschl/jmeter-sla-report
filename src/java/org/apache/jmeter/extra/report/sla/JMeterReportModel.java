@@ -22,7 +22,7 @@ import com.jamonapi.*;
 import java.util.Date;
 
 /**
- * Integrates JAMON with JMeter.
+ * Integrates JAMon with JMeter.
  */
 public class JMeterReportModel {
 

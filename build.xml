@@ -6,21 +6,12 @@
 	@author Siegfried Goeschl
 -->
 
-<project name="jmeter-sla-report" default="test" basedir="." xmlns:contrib="antlib:net.sf.antcontrib">
-
-  <!-- import shell environment as env.*-->
-  <property environment="env"/>
-
-  <!-- load the optional user specific properties -->
-  <property file="user.properties"/>
-
-  <!-- load the project specific properties -->
-  <property file="build.properties"/>
+<project name="jmeter-sla-report" default="test" basedir=".">
 
   <!-- the directory where generated output goes -->
   <property name="project.build.directory" value="${basedir}/target" />
 
-  <!-- setup the class path to run the report -->
+  <!-- setup the class path to run the report assuming that the Maven build succeeded -->
   <path id="project.class.path">
     <fileset dir="${basedir}/lib">
       <include name="*.jar"/>
