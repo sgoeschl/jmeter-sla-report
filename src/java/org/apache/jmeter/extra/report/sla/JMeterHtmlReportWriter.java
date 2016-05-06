@@ -59,9 +59,6 @@ public class JMeterHtmlReportWriter {
         }
     }
 
-    enum DisplayDataColumns {
-    }
-
     /**
      * the JAMON column used for sorting
      */
@@ -109,7 +106,7 @@ public class JMeterHtmlReportWriter {
         this.model = model;
         this.sortColumn = sortColumn;
         this.sortOrder = sortOrder;
-        this.locale = (locale != null ? locale : locale.getDefault());
+        this.locale = (locale != null ? locale : Locale.getDefault());
         this.firstAccessDate = new Date();
         this.lastAccessDate = new Date(0);
         this.reportTitle = "Load Test Results";
@@ -428,7 +425,6 @@ public class JMeterHtmlReportWriter {
             // nothing to do
         }
 
-
         html.append("<h2>Report Properties</h2>");
         html.append("\n<table width=\"95%\" cellspacing=\"2\" cellpadding=\"5\" border=\"0\" class=\"details\">\n");
         html.append("<tr>");
@@ -582,7 +578,6 @@ public class JMeterHtmlReportWriter {
         }
 
         final int rows = data.length;
-
         final double nrOfFirstError = (Double) (data[0][DISPLAY_HEADER_HITS_INDEX]);
 
         if (rows == 1 && nrOfFirstError == 0d) {

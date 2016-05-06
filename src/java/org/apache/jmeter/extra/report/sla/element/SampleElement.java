@@ -34,7 +34,6 @@ public class SampleElement {
     private boolean success;
     private final List<AssertionResultElement> assertionResultList = new ArrayList<>();
 
-
     public long getDuration() {
         return duration;
     }

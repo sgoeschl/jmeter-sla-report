@@ -11,6 +11,12 @@ import java.nio.charset.Charset;
 
 public class RegressionTest extends TestCase {
 
+    static {
+        System.setProperty("user.timezone", "Europe/Vienna");
+        System.setProperty("user.language", "en");
+        System.setProperty("user.country", "US");
+    }
+
     private static final String MARKER = "<h2>Report Properties</h2>";
 
     public void testSuccess() throws Exception {
@@ -26,7 +32,6 @@ public class RegressionTest extends TestCase {
         runReportAndCompare("src/test/data/failure.jtl",
                 "src/test/data/expected-failure-result.html");
     }
-
 
     public void testIncomplete() throws Exception {
         runReportAndCompare("src/test/data/incomplete.jtl",

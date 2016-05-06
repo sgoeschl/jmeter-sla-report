@@ -31,7 +31,7 @@ public class Main {
 
     public static void main(String args[]) throws Exception {
 
-        final Locale locale = new Locale("en", "US");
+        final Locale locale = Locale.getDefault();
         final int sortColumn = JMeterHtmlReportWriter.DISPLAY_HEADER_FIRSTACCESS_INDEX;
         final String sortOrder = "asc";
         final File targetFile = new File(args[0]);
