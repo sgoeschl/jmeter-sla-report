@@ -1,5 +1,8 @@
 package org.apache.jmeter.extra.report.sla;
 
+import com.jamonapi.MonitorComposite;
+import com.jamonapi.utils.Misc;
+
 import java.net.InetAddress;
 import java.util.ArrayList;
 import java.util.Date;
@@ -8,9 +11,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
-
-import com.jamonapi.MonitorComposite;
-import com.jamonapi.utils.Misc;
 
 /**
  * Generates a JMeter style HTML report based on the JAMon
@@ -25,8 +25,7 @@ public class JMeterHtmlReportWriter {
     public static final int DISPLAY_HEADER_FIRSTACCESS_INDEX = 13;
     public static final int DISPLAY_HEADER_LASTACCESS_INDEX = 14;
 
-    enum BasicDataColumns
-    {
+    enum BasicDataColumns {
         LABEL(1, "Label", true),
         UNITS(2, "Units", false),
         HITS(3, "Tests", true),
@@ -34,25 +33,24 @@ public class JMeterHtmlReportWriter {
         TOTAL(5, "Total", true),
         STDEV(6, "StdDev", true),
         MIN_TIME(8, "Min Time", true),
-        MAX_TIME(9,"Max Time", true),
-        FIRST_ACCESS(13,"First Access", true),
-        LAST_ACCESS(14,"Last Acccess", true);
+        MAX_TIME(9, "Max Time", true),
+        FIRST_ACCESS(13, "First Access", true),
+        LAST_ACCESS(14, "Last Acccess", true);
 
         int index;
         String label;
         boolean isReported;
 
-        BasicDataColumns(int index, String label, boolean isReported)
-        {
+        BasicDataColumns(int index, String label, boolean isReported) {
             this.index = index;
             this.label = label;
             this.isReported = isReported;
         }
 
         static List<BasicDataColumns> getReportedColumns() {
-            List<BasicDataColumns> result = new ArrayList<>();
-            for(BasicDataColumns value : BasicDataColumns.values()) {
-                if(value.isReported) {
+            final List<BasicDataColumns> result = new ArrayList<>();
+            for (BasicDataColumns value : BasicDataColumns.values()) {
+                if (value.isReported) {
                     result.add(value);
                 }
             }
@@ -60,24 +58,23 @@ public class JMeterHtmlReportWriter {
         }
     }
 
-    enum DisplayDataColumns
-    {
+    enum DisplayDataColumns {
     }
 
     /**
      * the JAMON column used for sorting
      */
-    private int sortColumn;
+    private final int sortColumn;
 
     /**
      * the sort order, e.g. "asc" or "desc"
      */
-    private String sortOrder;
+    private final String sortOrder;
 
     /**
      * the set of suppressed display headers
      */
-    private Map<String, Double> failureMap;
+    private final Map<String, Double> failureMap;
 
     /**
      * the date of the first test invocation
@@ -99,11 +96,11 @@ public class JMeterHtmlReportWriter {
      */
     private String reportSubtitle;
 
-	private final JMeterReportModel model;
+    private final JMeterReportModel model;
 
     public JMeterHtmlReportWriter(JMeterReportModel model, int sortColumn, String sortOrder) {
 
-    	this.model=model;
+        this.model = model;
         this.sortColumn = sortColumn;
         this.sortOrder = sortOrder;
         this.firstAccessDate = new Date();
@@ -121,12 +118,12 @@ public class JMeterHtmlReportWriter {
      */
     public String createReport() {
 
-        MonitorComposite monitor = model.getProvider().getRoot();
+        final MonitorComposite monitor = model.getProvider().getRoot();
 
         if (!monitor.hasData())
             return "";
 
-        StringBuffer html = new StringBuffer(100000);// guess on report size
+        final StringBuffer html = new StringBuffer(100000);// guess on report size
         html.append("<html>\n");
         html.append(getHtmlHeadFragment());
         html.append("<body>\n");
@@ -188,33 +185,33 @@ public class JMeterHtmlReportWriter {
 
     private void writeSummaryTable(StringBuffer html, MonitorComposite monitor) {
 
-        String[] header = monitor.getDisplayHeader();
-        Object[][] data = getDisplayData(monitor, JMeterReportModel.UNIT_MS);
-        Object[][] exceptionData = getDisplayData(monitor, JMeterReportModel.UNIT_EXCEPTION);
+        final String[] header = monitor.getDisplayHeader();
+        final Object[][] data = getDisplayData(monitor, JMeterReportModel.UNIT_MS);
+        final Object[][] exceptionData = getDisplayData(monitor, JMeterReportModel.UNIT_EXCEPTION);
 
-        int rows = data.length;
+        final int rows = data.length;
 
         // determine the first access date of the test
-        int firstAccessIndex = getHeaderIndex(header, "FirstAccess");
+        final int firstAccessIndex = getHeaderIndex(header, "FirstAccess");
         for (int i = 0; i < rows; i++) {
-            Date currFirstAccessDate = (Date) data[i][firstAccessIndex];
-            if(this.firstAccessDate.after(currFirstAccessDate)) {
+            final Date currFirstAccessDate = (Date) data[i][firstAccessIndex];
+            if (this.firstAccessDate.after(currFirstAccessDate)) {
                 this.firstAccessDate = currFirstAccessDate;
             }
         }
 
         // determine the last access date of the test
-        int lastAccessIndex = getHeaderIndex(header, "LastAccess");
+        final int lastAccessIndex = getHeaderIndex(header, "LastAccess");
         for (int i = 0; i < rows; i++) {
-            Date currLastAccessDate = (Date) data[i][lastAccessIndex];
-            if(this.lastAccessDate.before(currLastAccessDate)) {
+            final Date currLastAccessDate = (Date) data[i][lastAccessIndex];
+            if (this.lastAccessDate.before(currLastAccessDate)) {
                 this.lastAccessDate = currLastAccessDate;
             }
         }
 
         // determine the "Tests"
         Double nrOfTests = 0.0;
-        int hitsHeaderIndex = getHeaderIndex(header, "Hits");
+        final int hitsHeaderIndex = getHeaderIndex(header, "Hits");
         for (int i = 0; i < rows; i++) {
             nrOfTests += (Double) data[i][hitsHeaderIndex];
         }
@@ -222,33 +219,33 @@ public class JMeterHtmlReportWriter {
         // determine the "Failures"
         Double nrOfFailures = 0.0;
         for (Object[] anExceptionData : exceptionData) {
-            String currLLabel = anExceptionData[BasicDataColumns.LABEL.index].toString();
-            Double currHits = (Double) anExceptionData[BasicDataColumns.TOTAL.index];
+            final String currLLabel = anExceptionData[BasicDataColumns.LABEL.index].toString();
+            final Double currHits = (Double) anExceptionData[BasicDataColumns.TOTAL.index];
             this.failureMap.put(currLLabel, currHits);
             nrOfFailures += currHits;
         }
 
         // determine "Success Rate"
-        double successRate = 100.0 - (nrOfFailures * 100.0 / nrOfTests);
+        final double successRate = 100.0 - (nrOfFailures * 100.0 / nrOfTests);
 
         // determine "Average Time"
         double overallTime = 0;
-        int totalHeaderIndex = getHeaderIndex(header, "Total");
+        final int totalHeaderIndex = getHeaderIndex(header, "Total");
         for (int i = 0; i < rows; i++) {
             overallTime += (Double) data[i][totalHeaderIndex];
         }
-        double averageTime = overallTime / nrOfTests;
+        final double averageTime = overallTime / nrOfTests;
 
         // determine "Min Time"
         Double minTime = (double) Long.MAX_VALUE;
-        int minHeaderIndex = getHeaderIndex(header, "Min");
+        final int minHeaderIndex = getHeaderIndex(header, "Min");
         for (int i = 0; i < rows; i++) {
             minTime = Math.min(minTime, (Double) data[i][minHeaderIndex]);
         }
 
         // determine "Max Time"
         Double maxTime = (double) Long.MIN_VALUE;
-        int maxHeaderIndex = getHeaderIndex(header, "Max");
+        final int maxHeaderIndex = getHeaderIndex(header, "Max");
         for (int i = 0; i < rows; i++) {
             maxTime = Math.max(maxTime, (Double) data[i][maxHeaderIndex]);
         }
@@ -275,10 +272,10 @@ public class JMeterHtmlReportWriter {
 
     private void writePagesOverviewTable(StringBuffer html, MonitorComposite monitor, int sortCol, String sortOrder) {
 
-        List<BasicDataColumns> reportColumns = BasicDataColumns.getReportedColumns();
-        Object[][] data = Misc.sort(getBasicData(monitor, JMeterReportModel.UNIT_MS), sortCol, sortOrder);
-        int rows = data.length;
-        int cols = reportColumns.size();
+        final List<BasicDataColumns> reportColumns = BasicDataColumns.getReportedColumns();
+        final Object[][] data = Misc.sort(getBasicData(monitor, JMeterReportModel.UNIT_MS), sortCol, sortOrder);
+        final int rows = data.length;
+        final int cols = reportColumns.size();
 
         html.append("<h2>Pages Overview (ms)</h2>");
         html.append("\n<table width=\"95%\" cellspacing=\"2\" cellpadding=\"5\" border=\"0\" class=\"details\">\n");
@@ -290,9 +287,9 @@ public class JMeterHtmlReportWriter {
         html.append("</tr>\n");
 
         for (int i = 0; i < rows; i++) {
-            String label = data[i][BasicDataColumns.LABEL.index].toString();
-            double nrOfFailures = getNrOfFailures(label);
-            String failureClass = (nrOfFailures > 0.0 ? "Failure" : "");
+            final String label = data[i][BasicDataColumns.LABEL.index].toString();
+            final double nrOfFailures = getNrOfFailures(label);
+            final String failureClass = (nrOfFailures > 0.0 ? "Failure" : "");
             html.append("<tr valign=\"top\" class=\"" + failureClass + "\">");
             html.append("<td>").append(label).append("</td>");// first column
             for (int j = 1; j < cols; j++) {
@@ -309,13 +306,13 @@ public class JMeterHtmlReportWriter {
 
     private void writePagesDetailTable(StringBuffer html, MonitorComposite monitor, int sortCol, String sortOrder) {
 
-        String[] header = {"Label", "Tests", "0-10", "10-20", "20-40", "40-80", "80-160", "160-320", "320-640", "640-1280", "1280-2560", "2560-5120", "5120-10240", "10240-20480", ">20480ms"};
-        int[] headerIndex = {DISPLAY_HEADER_LABEL_INDEX, DISPLAY_HEADER_HITS_INDEX, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30};
+        final String[] header = {"Label", "Tests", "0-10", "10-20", "20-40", "40-80", "80-160", "160-320", "320-640", "640-1280", "1280-2560", "2560-5120", "5120-10240", "10240-20480", ">20480ms"};
+        final int[] headerIndex = {DISPLAY_HEADER_LABEL_INDEX, DISPLAY_HEADER_HITS_INDEX, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30};
 
-        Object[][] rawData = getDisplayData(monitor, JMeterReportModel.UNIT_MS);
-        Object[][] data = Misc.sort(rawData, sortCol, sortOrder);
-        int rows = data.length;
-        int cols = header.length;
+        final Object[][] rawData = getDisplayData(monitor, JMeterReportModel.UNIT_MS);
+        final Object[][] data = Misc.sort(rawData, sortCol, sortOrder);
+        final int rows = data.length;
+        final int cols = header.length;
 
         html.append("<h2>Pages Detail Table (ms)</h2>");
         html.append("\n<table width=\"95%\" cellspacing=\"2\" cellpadding=\"5\" border=\"0\" class=\"details\">\n");
@@ -326,8 +323,8 @@ public class JMeterHtmlReportWriter {
         html.append("</tr>");
 
         for (int i = 0; i < rows; i++) {
-            String label = data[i][DISPLAY_HEADER_LABEL_INDEX].toString();
-            double nrOfFailures = getNrOfFailures(label);
+            final String label = data[i][DISPLAY_HEADER_LABEL_INDEX].toString();
+            final double nrOfFailures = getNrOfFailures(label);
             if (nrOfFailures > 0.0) {
                 html.append("<tr valign=\"top\" class=\"Failure\">");
             } else {
@@ -345,14 +342,13 @@ public class JMeterHtmlReportWriter {
 
     private void writeErrorDetailTable(StringBuffer html, MonitorComposite monitor, int sortCol, String sortOrder) {
 
-        Object[][] rawData = getDisplayData(monitor, JMeterReportModel.UNIT_JMETER_ERRORS);
+        final Object[][] rawData = getDisplayData(monitor, JMeterReportModel.UNIT_JMETER_ERRORS);
 
-        if(!hasFailures(rawData))
-        {
+        if (!hasFailures(rawData)) {
             return;
         }
 
-        Object[][] data = Misc.sort(getDisplayData(monitor, JMeterReportModel.UNIT_JMETER_ERRORS), sortCol, sortOrder);
+        final Object[][] data = Misc.sort(getDisplayData(monitor, JMeterReportModel.UNIT_JMETER_ERRORS), sortCol, sortOrder);
 
         html.append("<h2>Error Details</h2>");
         html.append("\n<table width=\"95%\" cellspacing=\"2\" cellpadding=\"5\" border=\"0\" class=\"details\">\n");
@@ -363,14 +359,13 @@ public class JMeterHtmlReportWriter {
         html.append("<th>").append("Last").append("</th>");
         html.append("</tr>\n");
 
-        for (int i = 0; i < data.length; i++)
-        {
-            double hits = (Double) data[i][DISPLAY_HEADER_HITS_INDEX];
+        for (int i = 0; i < data.length; i++) {
+            final double hits = (Double) data[i][DISPLAY_HEADER_HITS_INDEX];
 
-            if(hits > 0d) {
-                String label = (String) data[i][DISPLAY_HEADER_LABEL_INDEX];
-                Date firstAccess = (Date) data[i][DISPLAY_HEADER_FIRSTACCESS_INDEX];
-                Date lastAccess = (Date) data[i][DISPLAY_HEADER_LASTACCESS_INDEX];
+            if (hits > 0d) {
+                final String label = (String) data[i][DISPLAY_HEADER_LABEL_INDEX];
+                final Date firstAccess = (Date) data[i][DISPLAY_HEADER_FIRSTACCESS_INDEX];
+                final Date lastAccess = (Date) data[i][DISPLAY_HEADER_LASTACCESS_INDEX];
                 html.append("<tr valign=\"top\" class=\"\">");
                 html.append("<td>").append(format(label)).append("</td>");
                 html.append("<td align='right'>").append(format(hits)).append("</td>");
@@ -385,15 +380,14 @@ public class JMeterHtmlReportWriter {
 
     private void writeErrorSummaryTable(StringBuffer html, MonitorComposite monitor, int sortColumn, String sortOrder) {
 
-        Object[][] rawData = getBasicData(monitor, JMeterReportModel.UNIT_EXCEPTION);
+        final Object[][] rawData = getBasicData(monitor, JMeterReportModel.UNIT_EXCEPTION);
 
-        if(!hasFailures(rawData))
-        {
+        if (!hasFailures(rawData)) {
             return;
         }
 
-        Object[][] data = Misc.sort(rawData, sortColumn, sortOrder);
-        int rows = data.length;
+        final Object[][] data = Misc.sort(rawData, sortColumn, sortOrder);
+        final int rows = data.length;
 
         html.append("<h2>Error Summary</h2>");
         html.append("\n<table width=\"95%\" cellspacing=\"2\" cellpadding=\"5\" border=\"0\" class=\"details\">\n");
@@ -402,12 +396,10 @@ public class JMeterHtmlReportWriter {
         html.append("<th>").append("Errors").append("</th>");
         html.append("</tr>");
 
-        for (int i = 0; i < rows; i++)
-        {
-            double hits = (Double) data[i][DISPLAY_HEADER_HITS_INDEX];
+        for (int i = 0; i < rows; i++) {
+            final double hits = (Double) data[i][DISPLAY_HEADER_HITS_INDEX];
 
-            if(hits > 0d)
-            {
+            if (hits > 0d) {
                 html.append("<tr valign=\"top\" class=\"\">");
                 html.append("<td>").append(data[i][DISPLAY_HEADER_LABEL_INDEX]).append("</td>");// first column
                 html.append("<td align='right'>").append(format(hits)).append("</td>");
@@ -450,7 +442,7 @@ public class JMeterHtmlReportWriter {
         html.append("</tr>\n");
 
         // test duration
-        Double testDuration = (this.lastAccessDate.getTime() - this.firstAccessDate.getTime()) / 1000.0;
+        final Double testDuration = (this.lastAccessDate.getTime() - this.firstAccessDate.getTime()) / 1000.0;
         html.append("<tr valign=\"top\" class=\"\">");
         html.append("<td>").append("Test Duration (sec)").append("</td>");
         html.append("<td>").append(format(testDuration)).append("</td>");// first column
@@ -480,10 +472,10 @@ public class JMeterHtmlReportWriter {
         html.append("<td>").append(properties.getProperty("user.name")).append("</td>");// first column
         html.append("</tr>\n");
 
-        Enumeration keys = properties.keys();
+        final Enumeration keys = properties.keys();
         while (keys.hasMoreElements()) {
-            String key = (String) keys.nextElement();
-            String value = (String) properties.get(key);
+            final String key = (String) keys.nextElement();
+            final String value = (String) properties.get(key);
             if (key.contains("jmeter")) {
                 html.append("<tr valign=\"top\" class=\"\">");
                 html.append("<td>").append(key).append("</td>");// first column
@@ -552,7 +544,7 @@ public class JMeterHtmlReportWriter {
     }
 
     private Object[][] getDisplayData(MonitorComposite monitor, String unit) {
-        List<Object[]> result = new ArrayList<>();
+        final List<Object[]> result = new ArrayList<>();
         for (Object[] currData : monitor.getDisplayData()) {
             if (currData[DISPLAY_HEADER_UNITS_INDEX].toString().equals(unit)) {
                 result.add(currData);
@@ -562,7 +554,7 @@ public class JMeterHtmlReportWriter {
     }
 
     private Object[][] getBasicData(MonitorComposite monitor, String unit) {
-        List<Object[]> result = new ArrayList<>();
+        final List<Object[]> result = new ArrayList<>();
         for (Object[] currData : monitor.getDisplayData()) {
             if (currData[DISPLAY_HEADER_UNITS_INDEX].toString().equals(unit)) {
                 result.add(currData);
@@ -572,20 +564,19 @@ public class JMeterHtmlReportWriter {
     }
 
     private Double getNrOfFailures(String label) {
-        Double result = failureMap.get(label);
+        final Double result = failureMap.get(label);
         return (result != null ? result : 0.0);
     }
 
     private boolean hasFailures(Object[][] data) {
 
-        if(data == null || data.length == 0)
-        {
+        if (data == null || data.length == 0) {
             return false;
         }
 
-        int rows = data.length;
+        final int rows = data.length;
 
-        double nrOfFirstError = (Double) (data[0][DISPLAY_HEADER_HITS_INDEX]);
+        final double nrOfFirstError = (Double) (data[0][DISPLAY_HEADER_HITS_INDEX]);
 
         if (rows == 1 && nrOfFirstError == 0d) {
             return false;

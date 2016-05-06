@@ -17,7 +17,9 @@
  */
 package org.apache.jmeter.extra.report.sla;
 
-import com.jamonapi.*;
+import com.jamonapi.MonKeyImp;
+import com.jamonapi.Monitor;
+import com.jamonapi.RangeHolder;
 
 import java.util.Date;
 
@@ -32,16 +34,17 @@ public class JMeterReportModel {
     public static final String UNIT_JMETER_ERRORS = "JMeter Errors";
 
     private final MonitorProvider provider;
-    
+
     public JMeterReportModel() {
-    	provider= new MonitorProvider(UNIT_MS, createMSHolder());
+        provider = new MonitorProvider(UNIT_MS, createMSHolder());
     }
-    
+
     /**
      * @return a customized range holder for measuring the execution time for services.
      */
     private static RangeHolder createMSHolder() {
-    	RangeHolder result = new RangeHolder("<");
+        final RangeHolder result = new RangeHolder("<");
+
         result.add("0_10ms", 10);
         result.add("10_20ms", 20);
         result.add("20_40ms", 40);
@@ -58,9 +61,10 @@ public class JMeterReportModel {
         // note last range is always called lastRange and is added automatically
         return result;
     }
-   
+
     public void addSuccess(String label, Date timestamp, long duration) {
-        Monitor mon =provider.get(label, UNIT_MS).start();
+        final Monitor mon = provider.get(label, UNIT_MS).start();
+
         if (mon.getFirstAccess().getTime() == 0) {
             mon.setFirstAccess(timestamp);
         }
@@ -72,7 +76,9 @@ public class JMeterReportModel {
     public void addFailure(String label, Date timestamp, long duration, String resultCode, String resultMessage) {
 
         addSuccess(label, timestamp, duration);
-        Monitor mon = provider.get(label + " - " + resultCode + " - " + resultMessage, UNIT_JMETER_ERRORS);
+
+        final Monitor mon = provider.get(label + " - " + resultCode + " - " + resultMessage, UNIT_JMETER_ERRORS);
+
         if (mon.getFirstAccess().getTime() == 0) {
             mon.setFirstAccess(timestamp);
         }
@@ -80,14 +86,14 @@ public class JMeterReportModel {
         mon.stop();
         mon.setLastAccess(timestamp);
 
-        Object[] details = new Object[] { label, resultCode, resultMessage };
-        MonKeyImp monKey = new MonKeyImp(label, details, UNIT_EXCEPTION);
-        // 
+        final Object[] details = new Object[] {label, resultCode, resultMessage};
+        final MonKeyImp monKey = new MonKeyImp(label, details, UNIT_EXCEPTION);
+
         provider.add(monKey);
         // System.out.println(timestamp + ":" + label + ":" + resultCode + ":" + resultMessage);
     }
 
     public MonitorProvider getProvider() {
-		return provider;
-	}
+        return provider;
+    }
 }

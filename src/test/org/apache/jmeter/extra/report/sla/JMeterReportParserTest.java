@@ -9,9 +9,9 @@ import junit.framework.TestCase;
 public class JMeterReportParserTest extends TestCase {
 
 	public void testCanFilterFilesInSourceDirectory() {
-		JMeterReportParser parser = new JMeterReportParser(null);
+		final JMeterReportParser parser = new JMeterReportParser(null);
 		parser.setSourceFiles(Arrays.asList(new File("src/test/data")));
-		List<File> sourceFiles = parser.getSourceFiles();
+		final List<File> sourceFiles = parser.getSourceFiles();
 		assertEquals(5, sourceFiles.size());
 	}
 	

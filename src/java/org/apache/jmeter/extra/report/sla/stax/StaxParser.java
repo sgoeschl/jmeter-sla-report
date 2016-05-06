@@ -26,12 +26,12 @@ import java.util.Stack;
 
 public class StaxParser {
 
-    private Stack<Object> elementStack;
-    private Map<String, ComponentParser> delegates;
+    private final Stack<Object> elementStack;
+    private final Map<String, ComponentParser> delegates;
 
     public StaxParser() {
-        delegates = new HashMap<String, ComponentParser>();
-        elementStack = new Stack<Object>();
+        delegates = new HashMap<>();
+        elementStack = new Stack<>();
     }
 
     public void parseElement(XMLStreamReader staxXmlReader) throws XMLStreamException {
@@ -45,7 +45,7 @@ public class StaxParser {
                 // If a Component Parser is registered that can handle
                 // this localName delegate to parser...
                 if (delegates.containsKey(localName)) {
-                    ComponentParser parser = delegates.get(localName);
+                    final ComponentParser parser = delegates.get(localName);
                     element = parser.startElement(staxXmlReader, elementStack);
                     elementStack.push(element);
                 }
@@ -54,7 +54,7 @@ public class StaxParser {
                 // If a Component Parser is registered that can handle
                 // this localName delegate to parser...
                 if (delegates.containsKey(localName)) {
-                    ComponentParser parser = delegates.get(localName);
+                    final ComponentParser parser = delegates.get(localName);
                     parser.endElement(staxXmlReader, elementStack);
                     elementStack.pop();
                 }

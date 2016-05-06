@@ -22,12 +22,11 @@ import org.apache.jmeter.extra.report.sla.element.AssertionResultElement;
 import org.apache.jmeter.extra.report.sla.element.SampleElement;
 
 public abstract class AbstractModelParser {
-	final JMeterReportModel model;
-	
-	public AbstractModelParser(JMeterReportModel model){
-		this.model=model;
-	}
-	
+    final JMeterReportModel model;
+
+    public AbstractModelParser(JMeterReportModel model) {
+        this.model = model;
+    }
 
     protected void addElement(SampleElement sampleElement) {
 
@@ -39,7 +38,7 @@ public abstract class AbstractModelParser {
             String responseMessage = sampleElement.getResponseMessage();
 
             if (sampleElement.getAssertionResultList().size() > 0) {
-                AssertionResultElement assertionResult = sampleElement.getAssertionResultList().get(0);
+                final AssertionResultElement assertionResult = sampleElement.getAssertionResultList().get(0);
                 resultCode = assertionResult.getName();
                 responseMessage = assertionResult.getFailureMessage();
             }

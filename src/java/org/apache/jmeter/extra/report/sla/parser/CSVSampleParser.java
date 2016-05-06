@@ -35,26 +35,27 @@ public class CSVSampleParser extends AbstractModelParser {
     private static final int HTTP_MSG_INDEX = 4;
     private static final int STATUS_INDEX = 7;
 
-    public CSVSampleParser(JMeterReportModel model){
-    	super(model);
+    public CSVSampleParser(JMeterReportModel model) {
+        super(model);
     }
-    
+
     /**
      * 1329852757203,128,Initialize,200,OK,Setup 1-1,text,true,0,0
-     * 
+     *
      * @param line the line in the CSV
      */
     public void parse(String line) {
-        String[] parts = line.split(",");
+        final String[] parts = line.split(",");
 
-        int duration = Integer.parseInt(parts[DURATION_INDEX]);
-        Date timestamp = new Date(Long.parseLong(parts[TIMESTAMP_INDEX]));
-        String label = parts[LABEL_INDEX];
-        String resultCode = parts[HTTP_CODE_INDEX];
-        String responseMessage = parts[HTTP_MSG_INDEX];
-        boolean success = Boolean.valueOf(parts[STATUS_INDEX]);
+        final int duration = Integer.parseInt(parts[DURATION_INDEX]);
+        final Date timestamp = new Date(Long.parseLong(parts[TIMESTAMP_INDEX]));
+        final String label = parts[LABEL_INDEX];
+        final String resultCode = parts[HTTP_CODE_INDEX];
+        final String responseMessage = parts[HTTP_MSG_INDEX];
+        final boolean success = Boolean.valueOf(parts[STATUS_INDEX]);
 
-        SampleElement sampleElement = new SampleElement();
+        final SampleElement sampleElement = new SampleElement();
+
         sampleElement.setDuration(duration);
         sampleElement.setTimestamp(timestamp);
         sampleElement.setLabel(label);

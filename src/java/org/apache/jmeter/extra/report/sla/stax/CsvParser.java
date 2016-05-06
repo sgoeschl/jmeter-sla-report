@@ -17,22 +17,23 @@
  */
 package org.apache.jmeter.extra.report.sla.stax;
 
+import org.apache.jmeter.extra.report.sla.JMeterReportModel;
+import org.apache.jmeter.extra.report.sla.parser.CSVSampleParser;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.Reader;
-
-import org.apache.jmeter.extra.report.sla.JMeterReportModel;
-import org.apache.jmeter.extra.report.sla.parser.CSVSampleParser;
 
 public class CsvParser {
 
     private final CSVSampleParser parser;
 
     public CsvParser(JMeterReportModel model) {
-    	parser = new CSVSampleParser(model);
-	}
+        parser = new CSVSampleParser(model);
+    }
+
     public void parseCsv(Reader fis) throws IOException {
-        BufferedReader in = new BufferedReader(fis);
+        final BufferedReader in = new BufferedReader(fis);
         try {
             parseLines(in);
         } finally {
@@ -41,7 +42,7 @@ public class CsvParser {
     }
 
     private void parseLines(BufferedReader in) throws IOException {
-        String line = null;
+        String line;
         while ((line = in.readLine()) != null) {
             parser.parse(line);
         }

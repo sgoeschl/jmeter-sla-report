@@ -31,31 +31,32 @@ import java.util.Stack;
  */
 public class SampleParser extends AbstractModelParser implements ComponentParser {
 
-	public SampleParser(JMeterReportModel model){
-    	super(model);
+    public SampleParser(JMeterReportModel model) {
+        super(model);
     }
+
     /**
      * <httpSample t="4" lt="4" ts="1301400114405" s="true" lb="Reporting.EnumGroupReport" rc="200" rm="OK" tn="CRM 1-2" dt="text" by="2469"/>
-     * 
+     *
      * @param streamReader the Stax stream reader
      * @param elementStack the current element stack
      */
     public Object startElement(XMLStreamReader streamReader, Stack<Object> elementStack) {
 
         // parse attributes of HttpSampler
-        Properties attributes = new Properties();
+        final Properties attributes = new Properties();
         for (int i = 0; i < streamReader.getAttributeCount(); i++) {
             attributes.put(streamReader.getAttributeName(i).getLocalPart(), streamReader.getAttributeValue(i));
         }
 
-        int duration = Integer.parseInt(attributes.getProperty("t"));
-        Date timestamp = new Date(Long.parseLong(attributes.getProperty("ts")));
-        String label = attributes.getProperty("lb");
-        String resultCode = attributes.getProperty("rc");
-        String responseMessage = attributes.getProperty("rm");
-        boolean success = Boolean.valueOf(attributes.getProperty("s"));
+        final int duration = Integer.parseInt(attributes.getProperty("t"));
+        final Date timestamp = new Date(Long.parseLong(attributes.getProperty("ts")));
+        final String label = attributes.getProperty("lb");
+        final String resultCode = attributes.getProperty("rc");
+        final String responseMessage = attributes.getProperty("rm");
+        final boolean success = Boolean.valueOf(attributes.getProperty("s"));
 
-        SampleElement sampleElement = new SampleElement();
+        final SampleElement sampleElement = new SampleElement();
         sampleElement.setDuration(duration);
         sampleElement.setTimestamp(timestamp);
         sampleElement.setLabel(label);
@@ -67,7 +68,7 @@ public class SampleParser extends AbstractModelParser implements ComponentParser
     }
 
     public void endElement(XMLStreamReader streamReader, Stack<Object> elementStack) {
-        SampleElement sampleElement = (SampleElement) elementStack.peek();
+        final SampleElement sampleElement = (SampleElement) elementStack.peek();
         addElement(sampleElement);
     }
 

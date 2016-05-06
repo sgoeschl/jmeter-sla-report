@@ -30,38 +30,37 @@ public class Main {
 
     public static void main(String args[]) throws Exception {
 
-        int sortColumn = JMeterHtmlReportWriter.DISPLAY_HEADER_FIRSTACCESS_INDEX;
-        String sortOrder = "asc";
-        File targetFile = new File(args[0]);
-        List<File> sourceFiles = new ArrayList<>();
+        final int sortColumn = JMeterHtmlReportWriter.DISPLAY_HEADER_FIRSTACCESS_INDEX;
+        final String sortOrder = "asc";
+        final File targetFile = new File(args[0]);
+        final List<File> sourceFiles = new ArrayList<>();
 
-        for(int i=1; i<args.length; i++) {
+        for (int i = 1; i < args.length; i++) {
 
-            File sourceFile = new File(args[i]);
+            final File sourceFile = new File(args[i]);
 
-            if(!sourceFile.exists()) {
+            if (!sourceFile.exists()) {
                 System.err.println("The following JMeter JTL file was not found : " + sourceFile.getAbsolutePath());
                 System.exit(1);
-            }
-            else {
+            } else {
                 sourceFiles.add(sourceFile);
             }
         }
 
-        if(args.length == 1) {
+        if (args.length == 1) {
             sourceFiles.add(new File("."));
         }
 
-        JMeterReportModel model = new JMeterReportModel();
+        final JMeterReportModel model = new JMeterReportModel();
         // parse the JMeter JTL file and feed JAMon
-        JMeterReportParser instance = new JMeterReportParser(model);
+        final JMeterReportParser instance = new JMeterReportParser(model);
         instance.setSourceFiles(sourceFiles);
         instance.run();
 
         // create the HTML report and write it to disk
         targetFile.getParentFile().mkdirs();
-        BufferedWriter out = new BufferedWriter(new FileWriter(targetFile));
-        out.write(new JMeterHtmlReportWriter(model,sortColumn, sortOrder).createReport());
+        final BufferedWriter out = new BufferedWriter(new FileWriter(targetFile));
+        out.write(new JMeterHtmlReportWriter(model, sortColumn, sortOrder).createReport());
         out.close();
     }
 

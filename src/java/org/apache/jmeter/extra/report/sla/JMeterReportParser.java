@@ -17,6 +17,14 @@
  */
 package org.apache.jmeter.extra.report.sla;
 
+import org.apache.jmeter.extra.report.sla.parser.AssertionResultParser;
+import org.apache.jmeter.extra.report.sla.parser.SampleParser;
+import org.apache.jmeter.extra.report.sla.stax.CsvParser;
+import org.apache.jmeter.extra.report.sla.stax.StaxParser;
+
+import javax.xml.stream.XMLInputFactory;
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FilenameFilter;
@@ -25,15 +33,6 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.ArrayList;
 import java.util.List;
-
-import javax.xml.stream.XMLInputFactory;
-import javax.xml.stream.XMLStreamException;
-import javax.xml.stream.XMLStreamReader;
-
-import org.apache.jmeter.extra.report.sla.parser.AssertionResultParser;
-import org.apache.jmeter.extra.report.sla.parser.SampleParser;
-import org.apache.jmeter.extra.report.sla.stax.CsvParser;
-import org.apache.jmeter.extra.report.sla.stax.StaxParser;
 
 /**
  * A JMeter XML Report post processor to efficiently process gigabytes of JMeter reports.
@@ -44,15 +43,15 @@ public class JMeterReportParser implements Runnable {
      * the JMeter JTL source files
      */
     private List<File> sourceFiles;
-	private final JMeterReportModel model;
+    private final JMeterReportModel model;
 
-	public JMeterReportParser(JMeterReportModel model) {
-		this.model = model;
-	}
+    public JMeterReportParser(JMeterReportModel model) {
+        this.model = model;
+    }
 
-	public void run() {
+    public void run() {
 
-        XMLInputFactory factory = XMLInputFactory.newInstance();
+        final XMLInputFactory factory = XMLInputFactory.newInstance();
 
         for (File sourceFile : getSourceFiles()) {
 
@@ -76,10 +75,8 @@ public class JMeterReportParser implements Runnable {
     }
 
     private void parseInputAsCsv(FileInputStream fis) throws IOException {
-        Reader csvReader;
-        csvReader = new InputStreamReader(fis);
-
-        CsvParser parser = new CsvParser(model);
+        final Reader csvReader = new InputStreamReader(fis);
+        final CsvParser parser = new CsvParser(model);
         parser.parseCsv(csvReader);
     }
 
@@ -88,11 +85,11 @@ public class JMeterReportParser implements Runnable {
         try {
             xmlStreamReader = factory.createXMLStreamReader(fis);
 
-            StaxParser parser = new StaxParser();
-            parser.registerParser("sample", new SampleParser(model));
-            parser.registerParser("httpSample", new SampleParser(model));
-            parser.registerParser("assertionResult", new AssertionResultParser());
-            parser.parseElement(xmlStreamReader);
+            final StaxParser staxParser = new StaxParser();
+            staxParser.registerParser("sample", new SampleParser(model));
+            staxParser.registerParser("httpSample", new SampleParser(model));
+            staxParser.registerParser("assertionResult", new AssertionResultParser());
+            staxParser.parseElement(xmlStreamReader);
         } finally {
             close(xmlStreamReader);
         }
@@ -100,7 +97,7 @@ public class JMeterReportParser implements Runnable {
 
     public List<File> getSourceFiles() {
 
-        List<File> result = new ArrayList<>();
+        final List<File> result = new ArrayList<>();
 
         for (File sourceFile : sourceFiles) {
 
@@ -108,11 +105,11 @@ public class JMeterReportParser implements Runnable {
                 result.add(sourceFile);
             } else {
 
-                String[] listedFiles = sourceFile.list(new FilenameFilter() {
+                final String[] listedFiles = sourceFile.list(new FilenameFilter() {
                     public boolean accept(File dir, String name) {
-                        String lowerName = name.toLowerCase();
-                        boolean isJtl = lowerName.endsWith(".jtl");
-                        boolean isCsv = lowerName.endsWith(".csv");
+                        final String lowerName = name.toLowerCase();
+                        final boolean isJtl = lowerName.endsWith(".jtl");
+                        final boolean isCsv = lowerName.endsWith(".csv");
                         return isJtl || isCsv;
                     }
                 });
