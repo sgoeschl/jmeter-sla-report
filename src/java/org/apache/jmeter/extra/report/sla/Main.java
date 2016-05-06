@@ -22,6 +22,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * A JMeter XML Report post processor to efficiently process gigabytes of JMeter reports.
@@ -30,6 +31,7 @@ public class Main {
 
     public static void main(String args[]) throws Exception {
 
+        final Locale locale = new Locale("en", "US");
         final int sortColumn = JMeterHtmlReportWriter.DISPLAY_HEADER_FIRSTACCESS_INDEX;
         final String sortOrder = "asc";
         final File targetFile = new File(args[0]);
@@ -60,7 +62,7 @@ public class Main {
         // create the HTML report and write it to disk
         targetFile.getParentFile().mkdirs();
         final BufferedWriter out = new BufferedWriter(new FileWriter(targetFile));
-        out.write(new JMeterHtmlReportWriter(model, sortColumn, sortOrder).createReport());
+        out.write(new JMeterHtmlReportWriter(model, sortColumn, sortOrder, locale).createReport());
         out.close();
     }
 

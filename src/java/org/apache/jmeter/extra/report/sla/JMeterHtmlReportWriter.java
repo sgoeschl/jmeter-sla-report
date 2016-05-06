@@ -9,6 +9,7 @@ import java.util.Date;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Properties;
 
@@ -96,13 +97,19 @@ public class JMeterHtmlReportWriter {
      */
     private String reportSubtitle;
 
+    /**
+     * the locale being used to format numbers and dates
+     */
+    private final Locale locale;
+
     private final JMeterReportModel model;
 
-    public JMeterHtmlReportWriter(JMeterReportModel model, int sortColumn, String sortOrder) {
+    public JMeterHtmlReportWriter(JMeterReportModel model, int sortColumn, String sortOrder, Locale locale) {
 
         this.model = model;
         this.sortColumn = sortColumn;
         this.sortOrder = sortOrder;
+        this.locale = (locale != null ? locale : locale.getDefault());
         this.firstAccessDate = new Date();
         this.lastAccessDate = new Date(0);
         this.reportTitle = "Load Test Results";
@@ -168,13 +175,13 @@ public class JMeterHtmlReportWriter {
      * @param data the data field
      * @return the formatted field
      */
-    private static String format(Object data) {
+    private String format(Object data) {
         if (data instanceof Date) {
-            return String.format("%1$tT", (Date) data);
+            return String.format(locale, "%1$tT", (Date) data);
         } else if (data instanceof Double) {
-            return String.format("%,10.0f", (Double) data);
+            return String.format(locale, "%,10.0f", (Double) data);
         } else if (data instanceof Integer) {
-            return String.format("%,d", (Integer) data);
+            return String.format(locale, "%,d", (Integer) data);
         } else if (data instanceof String) {
             return data.toString().replace("(0/0/0)", "");
         } else {
@@ -262,7 +269,7 @@ public class JMeterHtmlReportWriter {
         }
         html.append("<td>").append(format(nrOfTests.intValue())).append("</td>");
         html.append("<td>").append(format(nrOfFailures.intValue())).append("</td>");
-        html.append("<td>").append(String.format("%3.4f", successRate)).append(" %</td>");
+        html.append("<td>").append(String.format(locale, "%3.4f", successRate)).append(" %</td>");
         html.append("<td>").append(format(averageTime)).append(" ms</td>");
         html.append("<td>").append(format(minTime)).append(" ms</td>");
         html.append("<td>").append(format(maxTime)).append(" ms</td>");

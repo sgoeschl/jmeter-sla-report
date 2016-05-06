@@ -38,16 +38,19 @@ public class RegressionTest extends TestCase {
                 "src/test/data/expected-success-csv-result.html");
     }
 
-    private void runReportAndCompare(String inputFile, String expectedOutputFile)
+    private void runReportAndCompare(String inputFile, String expectedOutputFileName)
             throws Exception {
-        final File tempFile = File.createTempFile("junit", ".html");
-        tempFile.deleteOnExit();
 
-        Main.main(new String[] {tempFile.getAbsolutePath(), inputFile});
+        final File expectedOutputFile = new File(expectedOutputFileName);
+        final File actualReportDirectory = new File("./target/actual");
+        final File actualOutputFile = new File(actualReportDirectory, expectedOutputFile.getName());
 
-        Assert.assertEquals(removeRunDependentParts(readAsString(new File(
-                        expectedOutputFile))),
-                removeRunDependentParts(readAsString(tempFile)));
+        Main.main(new String[] {actualOutputFile.getAbsolutePath(), inputFile});
+
+        final String expectedReportContent = removeRunDependentParts(readAsString(expectedOutputFile));
+        final String actualReportContent = removeRunDependentParts(readAsString(actualOutputFile));
+
+        Assert.assertEquals(expectedReportContent, actualReportContent);
     }
 
     private String removeRunDependentParts(String input) {
