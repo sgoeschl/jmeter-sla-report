@@ -2,6 +2,7 @@ package org.apache.jmeter.extra.report.sla;
 
 import com.jamonapi.MonitorComposite;
 import com.jamonapi.utils.Misc;
+import org.apache.commons.lang3.StringEscapeUtils;
 
 import java.net.InetAddress;
 import java.util.ArrayList;
@@ -180,11 +181,10 @@ public class JMeterHtmlReportWriter {
         } else if (data instanceof Integer) {
             return String.format(locale, "%,d", (Integer) data);
         } else if (data instanceof String) {
-            return data.toString().replace("(0/0/0)", "");
+            return escapeHtml(data.toString().replace("(0/0/0)", ""));
         } else {
             return data.toString();
         }
-
     }
 
     private void writeSummaryTable(StringBuffer html, MonitorComposite monitor) {
@@ -478,8 +478,8 @@ public class JMeterHtmlReportWriter {
         final Enumeration keys = properties.keys();
         while (keys.hasMoreElements()) {
             final String key = (String) keys.nextElement();
-            final String value = (String) properties.get(key);
-            if (key.contains("jmeter")) {
+            final String value = escapeHtml((String) properties.get(key));
+            if (key.contains("jmeter") || key.contains("report.")) {
                 html.append("<tr valign=\"top\" class=\"\">");
                 html.append("<td>").append(key).append("</td>");// first column
                 html.append("<td>").append(value).append("</td>");// first column
@@ -585,5 +585,9 @@ public class JMeterHtmlReportWriter {
         }
 
         return true;
+    }
+
+    private String escapeHtml(String input) {
+        return StringEscapeUtils.escapeHtml4(input);
     }
 }
