@@ -20,8 +20,12 @@ package org.apache.jmeter.extra.report.sla;
 import com.jamonapi.MonKeyImp;
 import com.jamonapi.Monitor;
 import com.jamonapi.RangeHolder;
+import org.apache.jmeter.extra.report.sla.utils.BoundedList;
 
 import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Integrates JAMon with JMeter.
@@ -33,7 +37,10 @@ public class JMeterReportModel {
     public static final String UNIT_EXCEPTION = "Exception";
     public static final String UNIT_JMETER_ERRORS = "JMeter Errors";
 
+    private static int LIMITED_QUEUE_SIZE = 3;
+
     private final MonitorProvider provider;
+    private final Map<String, List<MonKeyImp>> labelErrorDetailsMap = new HashMap<>();
 
     public JMeterReportModel() {
         provider = new MonitorProvider(UNIT_MS, createMSHolder());
@@ -43,6 +50,7 @@ public class JMeterReportModel {
      * @return a customized range holder for measuring the execution time for services.
      */
     private static RangeHolder createMSHolder() {
+
         final RangeHolder result = new RangeHolder("<");
 
         result.add("0_10ms", 10);
@@ -63,37 +71,57 @@ public class JMeterReportModel {
     }
 
     public void addSuccess(String label, Date timestamp, long duration) {
-        final Monitor mon = provider.get(label, UNIT_MS).start();
-
-        if (mon.getFirstAccess().getTime() == 0) {
-            mon.setFirstAccess(timestamp);
-        }
-        mon.add(duration);
-        mon.stop();
-        mon.setLastAccess(timestamp);
+        addMonitor(UNIT_MS, label, timestamp, duration);
     }
 
-    public void addFailure(String label, Date timestamp, long duration, String resultCode, String resultMessage) {
+    public void addFailure(String label, Date timestamp, long duration, String errorCode, String errorMessage) {
 
-        addSuccess(label, timestamp, duration);
+        addMonitor(UNIT_MS, label, timestamp, duration);
 
-        final Monitor mon = provider.get(label + " - " + resultCode + " - " + resultMessage, UNIT_JMETER_ERRORS);
+        String errorLabel = createErrorLabel(label, errorCode, errorMessage);
+        addMonitor(UNIT_JMETER_ERRORS, errorLabel, timestamp, duration);
 
-        if (mon.getFirstAccess().getTime() == 0) {
-            mon.setFirstAccess(timestamp);
-        }
-        mon.add(duration);
-        mon.stop();
-        mon.setLastAccess(timestamp);
-
-        final Object[] details = new Object[] {label, resultCode, resultMessage};
+        final Object[] details = new Object[] {label, errorCode, errorMessage, timestamp};
         final MonKeyImp monKey = new MonKeyImp(label, details, UNIT_EXCEPTION);
-
-        provider.add(monKey);
-        // System.out.println(timestamp + ":" + label + ":" + resultCode + ":" + resultMessage);
+        getProvider().add(monKey);
+        addExceptionDetails(label, monKey);
     }
 
     public MonitorProvider getProvider() {
         return provider;
+    }
+
+    private String createErrorLabel(String label, String errorCode, String errorMessage) {
+        if (errorMessage == null || errorMessage.isEmpty()) {
+            return label + " - " + errorCode;
+        } else {
+            return label + " - " + errorCode + " - " + errorMessage;
+        }
+    }
+
+    private Monitor addMonitor(String type, String label, Date timestamp, long duration) {
+
+        final Monitor mon = getProvider().get(label, type).start();
+
+        if (mon.getFirstAccess().getTime() == 0) {
+            mon.setFirstAccess(timestamp);
+        }
+        mon.add(duration);
+        mon.stop();
+        mon.setLastAccess(timestamp);
+
+        return mon;
+    }
+
+    private void addExceptionDetails(String label, MonKeyImp monKey) {
+
+        List<MonKeyImp> labelErrorDetails = labelErrorDetailsMap.get(label);
+
+        if (labelErrorDetails == null) {
+            labelErrorDetails = new BoundedList<>(LIMITED_QUEUE_SIZE);
+            labelErrorDetailsMap.put(label, labelErrorDetails);
+        }
+
+        labelErrorDetails.add(monKey);
     }
 }

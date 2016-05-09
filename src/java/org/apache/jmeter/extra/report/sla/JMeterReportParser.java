@@ -70,7 +70,6 @@ public class JMeterReportParser implements Runnable {
             } finally {
                 close(fis);
             }
-
         }
     }
 
