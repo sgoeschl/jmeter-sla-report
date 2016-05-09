@@ -37,10 +37,10 @@ public class JMeterReportModel {
     public static final String UNIT_EXCEPTION = "Exception";
     public static final String UNIT_JMETER_ERRORS = "JMeter Errors";
 
-    private static int LIMITED_QUEUE_SIZE = 3;
+    private static final int LIMITED_QUEUE_SIZE = 3;
 
     private final MonitorProvider provider;
-    private final Map<String, List<MonKeyImp>> labelErrorDetailsMap = new HashMap<>();
+    private final Map<String, List<MonKeyImp>> errorMessagesMap = new HashMap<>();
 
     public JMeterReportModel() {
         provider = new MonitorProvider(UNIT_MS, createMSHolder());
@@ -76,26 +76,39 @@ public class JMeterReportModel {
 
     public void addFailure(String label, Date timestamp, long duration, String errorCode, String errorMessage) {
 
+        final String errorLabel = createErrorLabel(label, errorCode);
+
+        // keep track of the execution time regardless of the error
         addMonitor(UNIT_MS, label, timestamp, duration);
 
-        String errorLabel = createErrorLabel(label, errorCode, errorMessage);
-        addMonitor(UNIT_JMETER_ERRORS, errorLabel, timestamp, duration);
-
-        final Object[] details = new Object[] {label, errorCode, errorMessage, timestamp};
+        // keep track of the JAMOn exceptions
+        final Object[] details = new Object[] {label, errorLabel, errorCode, errorMessage, timestamp};
         final MonKeyImp monKey = new MonKeyImp(label, details, UNIT_EXCEPTION);
         getProvider().add(monKey);
-        addExceptionDetails(label, monKey);
+
+        // additionally keep track of "JMeter" errors
+        addMonitor(UNIT_JMETER_ERRORS, errorLabel, timestamp, duration);
+
+        // assuming that error messages are mostly unique keep track
+        // of the 'LIMITED_QUEUE_SIZE' occurrences
+        if(errorMessage != null && !errorMessage.isEmpty()) {
+            addErrorMessages(label, monKey);
+        }
     }
 
     public MonitorProvider getProvider() {
         return provider;
     }
 
-    private String createErrorLabel(String label, String errorCode, String errorMessage) {
-        if (errorMessage == null || errorMessage.isEmpty()) {
-            return label + " - " + errorCode;
+    public Map<String, List<MonKeyImp>> getErrorMessagesMap() {
+        return errorMessagesMap;
+    }
+
+    private String createErrorLabel(String label, String errorCode) {
+        if (errorCode == null || errorCode.isEmpty()) {
+            return label;
         } else {
-            return label + " - " + errorCode + " - " + errorMessage;
+            return label + " - " + errorCode;
         }
     }
 
@@ -113,13 +126,13 @@ public class JMeterReportModel {
         return mon;
     }
 
-    private void addExceptionDetails(String label, MonKeyImp monKey) {
+    private void addErrorMessages(String label, MonKeyImp monKey) {
 
-        List<MonKeyImp> labelErrorDetails = labelErrorDetailsMap.get(label);
+        List<MonKeyImp> labelErrorDetails = errorMessagesMap.get(label);
 
         if (labelErrorDetails == null) {
             labelErrorDetails = new BoundedList<>(LIMITED_QUEUE_SIZE);
-            labelErrorDetailsMap.put(label, labelErrorDetails);
+            errorMessagesMap.put(label, labelErrorDetails);
         }
 
         labelErrorDetails.add(monKey);
