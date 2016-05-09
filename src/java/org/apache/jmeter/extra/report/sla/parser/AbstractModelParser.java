@@ -21,8 +21,11 @@ import org.apache.jmeter.extra.report.sla.JMeterReportModel;
 import org.apache.jmeter.extra.report.sla.element.AssertionResultElement;
 import org.apache.jmeter.extra.report.sla.element.SampleElement;
 
+import java.util.Date;
+
 public abstract class AbstractModelParser {
-    final JMeterReportModel model;
+
+    private final JMeterReportModel model;
 
     public AbstractModelParser(JMeterReportModel model) {
         this.model = model;
@@ -30,21 +33,41 @@ public abstract class AbstractModelParser {
 
     protected void addElement(SampleElement sampleElement) {
 
+        final String label = sampleElement.getLabel();
+        final Date timestamp = sampleElement.getTimestamp();
+        final long duration = sampleElement.getDuration();
+
         if (sampleElement.isSuccess()) {
-            model.addSuccess(sampleElement.getLabel(), sampleElement.getTimestamp(), sampleElement.getDuration());
+            model.addSuccess(label, timestamp, duration);
         } else {
+            final String resultCode;
+            final String responseMessage;
 
-            String resultCode = sampleElement.getResultCode();
-            String responseMessage = sampleElement.getResponseMessage();
-
-            if (sampleElement.getAssertionResultList().size() > 0) {
+            if (!sampleElement.getAssertionResultList().isEmpty()) {
                 final AssertionResultElement assertionResult = sampleElement.getAssertionResultList().get(0);
                 resultCode = assertionResult.getName();
                 responseMessage = assertionResult.getFailureMessage();
+            } else {
+                resultCode = sampleElement.getResultCode();
+                responseMessage = sampleElement.getResponseMessage();
             }
 
-            model.addFailure(sampleElement.getLabel(), sampleElement.getTimestamp(), sampleElement.getDuration(), resultCode,
-                    responseMessage);
+            final String failureResultCode = createFailureResultCode(resultCode, responseMessage);
+
+            model.addFailure(
+                    label,
+                    timestamp,
+                    duration,
+                    failureResultCode,
+                    null);
+        }
+    }
+
+    private String createFailureResultCode(String errorCode, String errorMessage) {
+        if (errorMessage == null || errorMessage.isEmpty()) {
+            return errorCode;
+        } else {
+            return errorCode + " - " + errorMessage;
         }
     }
 

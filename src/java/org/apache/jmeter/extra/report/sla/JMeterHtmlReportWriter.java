@@ -1,5 +1,6 @@
 package org.apache.jmeter.extra.report.sla;
 
+import com.jamonapi.MonKeyImp;
 import com.jamonapi.MonitorComposite;
 import com.jamonapi.utils.Misc;
 import org.apache.commons.lang3.StringEscapeUtils;
@@ -39,9 +40,9 @@ public class JMeterHtmlReportWriter {
         FIRST_ACCESS(13, "First Access", true),
         LAST_ACCESS(14, "Last Acccess", true);
 
-        int index;
-        String label;
-        boolean isReported;
+        final int index;
+        final String label;
+        final boolean isReported;
 
         BasicDataColumns(int index, String label, boolean isReported) {
             this.index = index;
@@ -143,6 +144,7 @@ public class JMeterHtmlReportWriter {
         writeErrorSummaryTable(html, monitor, 0, "asc");
         html.append("<hr size=\"1\">");
         writeErrorDetailTable(html, monitor, 0, "asc");
+        writeErrorMessagesTable(html);
         html.append("<hr size=\"1\">");
         writePropertyTable(html, System.getProperties());
         html.append("</body>\n");
@@ -182,8 +184,10 @@ public class JMeterHtmlReportWriter {
             return String.format(locale, "%,d", (Integer) data);
         } else if (data instanceof String) {
             return escapeHtml(data.toString().replace("(0/0/0)", ""));
-        } else {
+        } else if (data instanceof Object) {
             return data.toString();
+        } else {
+            return null;
         }
     }
 
@@ -344,6 +348,38 @@ public class JMeterHtmlReportWriter {
         html.append("</table>\n");
     }
 
+    private void writeErrorSummaryTable(StringBuffer html, MonitorComposite monitor, int sortColumn, String sortOrder) {
+
+        final Object[][] rawData = getBasicData(monitor, JMeterReportModel.UNIT_EXCEPTION);
+
+        if (!hasFailures(rawData)) {
+            return;
+        }
+
+        final Object[][] data = Misc.sort(rawData, sortColumn, sortOrder);
+        final int rows = data.length;
+
+        html.append("<h2>Error Summary</h2>");
+        html.append("\n<table width=\"95%\" cellspacing=\"2\" cellpadding=\"5\" border=\"0\" class=\"details\">\n");
+        html.append("<tr>");
+        html.append("<th>").append("Label").append("</th>");
+        html.append("<th>").append("Errors").append("</th>");
+        html.append("</tr>");
+
+        for (int i = 0; i < rows; i++) {
+            final double hits = (Double) data[i][DISPLAY_HEADER_HITS_INDEX];
+
+            if (hits > 0d) {
+                html.append("<tr valign=\"top\" class=\"\">");
+                html.append("<td>").append(data[i][DISPLAY_HEADER_LABEL_INDEX]).append("</td>");// first column
+                html.append("<td align='right'>").append(format(hits)).append("</td>");
+                html.append("</tr>\n");
+            }
+        }
+
+        html.append("</table>\n");
+    }
+
     private void writeErrorDetailTable(StringBuffer html, MonitorComposite monitor, int sortCol, String sortOrder) {
 
         final Object[][] rawData = getDisplayData(monitor, JMeterReportModel.UNIT_JMETER_ERRORS);
@@ -382,31 +418,41 @@ public class JMeterHtmlReportWriter {
         html.append("</table>\n");
     }
 
-    private void writeErrorSummaryTable(StringBuffer html, MonitorComposite monitor, int sortColumn, String sortOrder) {
+    private void writeErrorMessagesTable(StringBuffer html) {
 
-        final Object[][] rawData = getBasicData(monitor, JMeterReportModel.UNIT_EXCEPTION);
+        final Map<String, List<MonKeyImp>> errorDetailsMap = model.getErrorMessagesMap();
 
-        if (!hasFailures(rawData)) {
+        if (errorDetailsMap.isEmpty()) {
             return;
         }
 
-        final Object[][] data = Misc.sort(rawData, sortColumn, sortOrder);
-        final int rows = data.length;
+        html.append("<hr size=\"1\">");
 
-        html.append("<h2>Error Summary</h2>");
+        html.append("<h2>Error Messages</h2>");
         html.append("\n<table width=\"95%\" cellspacing=\"2\" cellpadding=\"5\" border=\"0\" class=\"details\">\n");
         html.append("<tr>");
         html.append("<th>").append("Label").append("</th>");
-        html.append("<th>").append("Errors").append("</th>");
-        html.append("</tr>");
+        html.append("<th>").append("Date").append("</th>");
+        html.append("<th>").append("Error Message").append("</th>");
+        html.append("</tr>\n");
 
-        for (int i = 0; i < rows; i++) {
-            final double hits = (Double) data[i][DISPLAY_HEADER_HITS_INDEX];
+        for (String key : errorDetailsMap.keySet()) {
 
-            if (hits > 0d) {
+            final List<MonKeyImp> monKeyImpList = errorDetailsMap.get(key);
+
+            for (MonKeyImp monKey : monKeyImpList) {
+
+                final Object[] details = (Object[]) monKey.getDetails();
+                final String label = (String) details[0];
+                final String errorLabel = (String) details[1];
+                final String errorCode = (String) details[2];
+                final String errorMessage = (String) details[3];
+                final Date timeStamp = (Date) details[4];
+
                 html.append("<tr valign=\"top\" class=\"\">");
-                html.append("<td>").append(data[i][DISPLAY_HEADER_LABEL_INDEX]).append("</td>");// first column
-                html.append("<td align='right'>").append(format(hits)).append("</td>");
+                html.append("<td>").append(format(errorLabel)).append("</td>");
+                html.append("<td>").append(format(timeStamp)).append("</td>");
+                html.append("<td>").append(format(errorMessage)).append("</td>");
                 html.append("</tr>\n");
             }
         }
@@ -435,54 +481,54 @@ public class JMeterHtmlReportWriter {
         // report first access date
         html.append("<tr valign=\"top\" class=\"\">");
         html.append("<td>").append("Test Start Date").append("</td>");
-        html.append("<td>").append(this.firstAccessDate).append("</td>");// first column
+        html.append("<td>").append(this.firstAccessDate).append("</td>");
         html.append("</tr>\n");
 
         // report last access date
         html.append("<tr valign=\"top\" class=\"\">");
         html.append("<td>").append("Test End Date").append("</td>");
-        html.append("<td>").append(this.lastAccessDate).append("</td>");// first column
+        html.append("<td>").append(this.lastAccessDate).append("</td>");
         html.append("</tr>\n");
 
         // test duration
         final Double testDuration = (this.lastAccessDate.getTime() - this.firstAccessDate.getTime()) / 1000.0;
         html.append("<tr valign=\"top\" class=\"\">");
         html.append("<td>").append("Test Duration (sec)").append("</td>");
-        html.append("<td>").append(format(testDuration)).append("</td>");// first column
+        html.append("<td>").append(format(testDuration)).append("</td>");
         html.append("</tr>\n");
 
         // current date
         html.append("<tr valign=\"top\" class=\"\">");
         html.append("<td>").append("Report Creation Date").append("</td>");
-        html.append("<td>").append(new Date()).append("</td>");// first column
+        html.append("<td>").append(new Date()).append("</td>");
         html.append("</tr>\n");
 
         // host name
         html.append("<tr valign=\"top\" class=\"\">");
         html.append("<td>").append("host.name").append("</td>");
-        html.append("<td>").append(hostName).append("</td>");// first column
+        html.append("<td>").append(hostName).append("</td>");
         html.append("</tr>\n");
 
         // host address
         html.append("<tr valign=\"top\" class=\"\">");
         html.append("<td>").append("host.address").append("</td>");
-        html.append("<td>").append(hostAddress).append("</td>");// first column
+        html.append("<td>").append(hostAddress).append("</td>");
         html.append("</tr>\n");
 
         // user name
         html.append("<tr valign=\"top\" class=\"\">");
         html.append("<td>").append("user.name").append("</td>");
-        html.append("<td>").append(properties.getProperty("user.name")).append("</td>");// first column
+        html.append("<td>").append(properties.getProperty("user.name")).append("</td>");
         html.append("</tr>\n");
 
         final Enumeration keys = properties.keys();
         while (keys.hasMoreElements()) {
             final String key = (String) keys.nextElement();
             final String value = escapeHtml((String) properties.get(key));
-            if (key.contains("jmeter") || key.contains("report.")) {
+            if (key.contains("jmeter.") || key.contains("report.")) {
                 html.append("<tr valign=\"top\" class=\"\">");
-                html.append("<td>").append(key).append("</td>");// first column
-                html.append("<td>").append(value).append("</td>");// first column
+                html.append("<td>").append(key).append("</td>");
+                html.append("<td>").append(value).append("</td>");
                 html.append("</tr>\n");
             }
         }
