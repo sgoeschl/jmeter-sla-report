@@ -34,7 +34,7 @@ whereas the following JMeter SLA reports are generated
 
 Afterwards you see a report similiar to the image below
 
-![alt text](./src/site/images/access-log-sla-report.png "HTML Report")
+![JMeter HTML Report](./src/site/images/access-log-sla-report.png "HTML Report")
 
 ## 3. ANT Integration
 
