@@ -91,7 +91,7 @@ public class JMeterReportModel {
 
         // assuming that error messages are mostly unique keep track
         // of the 'LIMITED_QUEUE_SIZE' occurrences
-        if(errorMessage != null && !errorMessage.isEmpty()) {
+        if (errorMessage != null && !errorMessage.isEmpty()) {
             addErrorMessages(label, monKey);
         }
     }

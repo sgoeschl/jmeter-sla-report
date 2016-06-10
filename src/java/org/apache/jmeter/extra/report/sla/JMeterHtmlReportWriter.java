@@ -31,7 +31,7 @@ public class JMeterHtmlReportWriter {
     enum BasicDataColumns {
         LABEL(1, "Label", true),
         UNITS(2, "Units", false),
-        HITS(3, "Tests", true),
+        HITS(3, "Requests", true),
         AVG(4, "Avg", true),
         TOTAL(5, "Total", true),
         STDEV(6, "StdDev", true),
@@ -77,12 +77,12 @@ public class JMeterHtmlReportWriter {
     private final Map<String, Double> failureMap;
 
     /**
-     * the date of the first test invocation
+     * the date of the first request
      */
     private Date firstAccessDate;
 
     /**
-     * the date of the last test invocation
+     * the date of the last request
      */
     private Date lastAccessDate;
 
@@ -111,7 +111,7 @@ public class JMeterHtmlReportWriter {
         this.locale = (locale != null ? locale : Locale.getDefault());
         this.firstAccessDate = new Date();
         this.lastAccessDate = new Date(0);
-        this.reportTitle = "Load Test Results";
+        this.reportTitle = "Load Test Report";
         this.reportSubtitle = "Designed for use with <a href=\"http://jakarta.apache.org/jmeter\">JMeter</a> and <a href=\"http://ant.apache.org\">Ant</a>.";
 
         this.failureMap = new HashMap<>();
@@ -199,7 +199,7 @@ public class JMeterHtmlReportWriter {
 
         final int rows = data.length;
 
-        // determine the first access date of the test
+        // determine the timestamp of the first request
         final int firstAccessIndex = getHeaderIndex(header, "FirstAccess");
         for (int i = 0; i < rows; i++) {
             final Date currFirstAccessDate = (Date) data[i][firstAccessIndex];
@@ -208,7 +208,7 @@ public class JMeterHtmlReportWriter {
             }
         }
 
-        // determine the last access date of the test
+        // determine the timestamp of the last request
         final int lastAccessIndex = getHeaderIndex(header, "LastAccess");
         for (int i = 0; i < rows; i++) {
             final Date currLastAccessDate = (Date) data[i][lastAccessIndex];
@@ -217,11 +217,11 @@ public class JMeterHtmlReportWriter {
             }
         }
 
-        // determine the "Tests"
-        Double nrOfTests = 0.0;
+        // determine the "requests"
+        Double nrOfRequests = 0.0;
         final int hitsHeaderIndex = getHeaderIndex(header, "Hits");
         for (int i = 0; i < rows; i++) {
-            nrOfTests += (Double) data[i][hitsHeaderIndex];
+            nrOfRequests += (Double) data[i][hitsHeaderIndex];
         }
 
         // determine the "Failures"
@@ -234,7 +234,7 @@ public class JMeterHtmlReportWriter {
         }
 
         // determine "Success Rate"
-        final double successRate = 100.0 - (nrOfFailures * 100.0 / nrOfTests);
+        final double successRate = 100.0 - (nrOfFailures * 100.0 / nrOfRequests);
 
         // determine "Average Time"
         double overallTime = 0;
@@ -242,7 +242,7 @@ public class JMeterHtmlReportWriter {
         for (int i = 0; i < rows; i++) {
             overallTime += (Double) data[i][totalHeaderIndex];
         }
-        final double averageTime = overallTime / nrOfTests;
+        final double averageTime = overallTime / nrOfRequests;
 
         // determine "Min Time"
         Double minTime = (double) Long.MAX_VALUE;
@@ -261,14 +261,14 @@ public class JMeterHtmlReportWriter {
         html.append("<h2>Summary</h2>");
         html.append("<table width=\"95%\" cellspacing=\"2\" cellpadding=\"5\" border=\"0\" class=\"details\">\n");
         html.append("<tr valign=\"top\">\n");
-        html.append("<th>Tests</th><th>Failures</th><th>Success Rate</th><th>Average Time</th><th>Min Time</th><th>Max Time</th>\n");
+        html.append("<th>Requests</th><th>Failures</th><th>Success Rate</th><th>Average Time</th><th>Min Time</th><th>Max Time</th>\n");
         html.append("</tr>\n");
         if (nrOfFailures > 0.0) {
             html.append("<tr valign=\"top\" class=\"Failure\">\n");
         } else {
             html.append("<tr valign=\"top\" class=\"\">\n");
         }
-        html.append("<td>").append(format(nrOfTests.intValue())).append("</td>");
+        html.append("<td>").append(format(nrOfRequests.intValue())).append("</td>");
         html.append("<td>").append(format(nrOfFailures.intValue())).append("</td>");
         html.append("<td>").append(String.format(locale, "%3.4f", successRate)).append(" %</td>");
         html.append("<td>").append(format(averageTime)).append(" ms</td>");
@@ -314,7 +314,7 @@ public class JMeterHtmlReportWriter {
 
     private void writePagesDetailTable(StringBuffer html, MonitorComposite monitor, int sortCol, String sortOrder) {
 
-        final String[] header = {"Label", "Tests", "0-10", "10-20", "20-40", "40-80", "80-160", "160-320", "320-640", "640-1280", "1280-2560", "2560-5120", "5120-10240", "10240-20480", ">20480ms"};
+        final String[] header = {"Label", "Requests", "0-10", "10-20", "20-40", "40-80", "80-160", "160-320", "320-640", "640-1280", "1280-2560", "2560-5120", "5120-10240", "10240-20480", ">20480ms"};
         final int[] headerIndex = {DISPLAY_HEADER_LABEL_INDEX, DISPLAY_HEADER_HITS_INDEX, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30};
 
         final Object[][] rawData = getDisplayData(monitor, JMeterReportModel.UNIT_MS);
@@ -478,23 +478,23 @@ public class JMeterHtmlReportWriter {
         html.append("<th>").append("Value").append("</th>");
         html.append("</tr>");
 
-        // report first access date
+        // report first request timestamp
         html.append("<tr valign=\"top\" class=\"\">");
-        html.append("<td>").append("Test Start Date").append("</td>");
+        html.append("<td>").append("First Request").append("</td>");
         html.append("<td>").append(this.firstAccessDate).append("</td>");
         html.append("</tr>\n");
 
-        // report last access date
+        // report last request timestamp
         html.append("<tr valign=\"top\" class=\"\">");
-        html.append("<td>").append("Test End Date").append("</td>");
+        html.append("<td>").append("Last Request").append("</td>");
         html.append("<td>").append(this.lastAccessDate).append("</td>");
         html.append("</tr>\n");
 
-        // test duration
-        final Double testDuration = (this.lastAccessDate.getTime() - this.firstAccessDate.getTime()) / 1000.0;
+        // report duration
+        final Double reportDuration = (this.lastAccessDate.getTime() - this.firstAccessDate.getTime()) / 1000.0;
         html.append("<tr valign=\"top\" class=\"\">");
-        html.append("<td>").append("Test Duration (sec)").append("</td>");
-        html.append("<td>").append(format(testDuration)).append("</td>");
+        html.append("<td>").append("Report Duration (sec)").append("</td>");
+        html.append("<td>").append(format(reportDuration)).append("</td>");
         html.append("</tr>\n");
 
         // current date
