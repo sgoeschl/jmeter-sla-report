@@ -130,6 +130,7 @@ public class JMeterHtmlReportWriter {
             return "";
 
         final StringBuffer html = new StringBuffer(100000);// guess on report size
+        html.append("<!DOCTYPE html PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" \"http://www.w3.org/TR/html4/loose.dtd\">\n");
         html.append("<html>\n");
         html.append(getHtmlHeadFragment());
         html.append("<body>\n");
@@ -549,7 +550,7 @@ public class JMeterHtmlReportWriter {
     private String getHtmlHeadFragment() {
 
         return "<head>\n" +
-                "<META http-equiv=\"Content-Type\" content=\"text/html; charset=US-ASCII\">\n" +
+                "<META http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\">\n" +
                 "<title>" + getReportTitle() + "</title>\n" +
                 "<style type=\"text/css\">\n" +
                 "\t\t\t\tbody {\n" +
