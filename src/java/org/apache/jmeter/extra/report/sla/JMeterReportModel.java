@@ -86,7 +86,7 @@ public class JMeterReportModel {
         mon.stop();
         mon.setLastAccess(timestamp);
 
-        final Object[] details = new Object[] {label, resultCode, resultMessage};
+        final Object[] details = new Object[] { label, resultCode, resultMessage };
         final MonKeyImp monKey = new MonKeyImp(label, details, UNIT_EXCEPTION);
 
         provider.add(monKey);

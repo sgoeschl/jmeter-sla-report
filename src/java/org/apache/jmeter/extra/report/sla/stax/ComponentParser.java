@@ -26,5 +26,6 @@ import java.util.Stack;
  */
 public interface ComponentParser {
     Object startElement(XMLStreamReader staxXmlReader, Stack<Object> elementStack) throws XMLStreamException;
+
     void endElement(XMLStreamReader staxXmlReader, Stack<Object> elementStack) throws XMLStreamException;
 }

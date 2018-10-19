@@ -20,6 +20,7 @@ package org.apache.jmeter.extra.report.sla;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -30,17 +31,23 @@ import java.util.Locale;
 public class Main {
 
     public static void main(String args[]) throws Exception {
+        final File reportFile = new File(args[0]);
+        final List<File> sourceFiles = getSourceFiles(args);
+        final JMeterReportModel reportModel = createReportModel(sourceFiles);
+        createReport(reportFile, sourceFiles.get(0).getAbsolutePath(), reportModel);
+    }
 
-        final Locale locale = Locale.getDefault();
-        final int sortColumn = JMeterHtmlReportWriter.DISPLAY_HEADER_FIRSTACCESS_INDEX;
-        final String sortOrder = "asc";
-        final File targetFile = new File(args[0]);
-        final List<File> sourceFiles = new ArrayList<>();
+    private static List<File> getSourceFiles(String args[]) {
+
+        final List<File> sourceFiles = new ArrayList<File>();
+
+        // when no source files are passed we pick up CSV/JTL from the current working directory
+        if (args.length == 1) {
+            sourceFiles.add(new File("."));
+        }
 
         for (int i = 1; i < args.length; i++) {
-
             final File sourceFile = new File(args[i]);
-
             if (!sourceFile.exists()) {
                 System.err.println("The following JMeter JTL file was not found : " + sourceFile.getAbsolutePath());
                 System.exit(1);
@@ -49,21 +56,41 @@ public class Main {
             }
         }
 
-        if (args.length == 1) {
-            sourceFiles.add(new File("."));
-        }
-
-        final JMeterReportModel model = new JMeterReportModel();
-        // parse the JMeter JTL file and feed JAMon
-        final JMeterReportParser instance = new JMeterReportParser(model);
-        instance.setSourceFiles(sourceFiles);
-        instance.run();
-
-        // create the HTML report and write it to disk
-        targetFile.getParentFile().mkdirs();
-        final BufferedWriter out = new BufferedWriter(new FileWriter(targetFile));
-        out.write(new JMeterHtmlReportWriter(model, sortColumn, sortOrder, locale).createReport());
-        out.close();
+        return sourceFiles;
     }
 
+    private static JMeterReportModel createReportModel(List<File> sourceFiles) {
+        final JMeterReportModel model = new JMeterReportModel();
+        final JMeterReportParser parser = new JMeterReportParser(model);
+        parser.setSourceFiles(sourceFiles);
+        parser.run();
+        return model;
+    }
+
+    private static void createReportDirectory(File targetFile) {
+        final File targetDirectory = targetFile.getParentFile();
+        if (targetDirectory != null && !targetDirectory.exists()) {
+            if (!targetDirectory.mkdirs()) {
+                throw new RuntimeException("Failed to create " + targetDirectory.getAbsolutePath());
+            }
+        }
+    }
+
+    private static void createReport(File reportFile, String reportSource, JMeterReportModel model) throws IOException {
+        final Locale locale = Locale.getDefault();
+        final int sortColumn = JMeterHtmlReportWriter.DISPLAY_HEADER_FIRSTACCESS_INDEX;
+        final String sortOrder = "asc";
+
+        createReportDirectory(reportFile);
+
+        final BufferedWriter out = new BufferedWriter(new FileWriter(reportFile));
+
+        try {
+            System.setProperty("jmeter.source.file", reportSource);
+            out.write(new JMeterHtmlReportWriter(model, sortColumn, sortOrder, locale).createReport());
+        } finally {
+            System.setProperty("jmeter.source.file", "");
+            out.close();
+        }
+    }
 }

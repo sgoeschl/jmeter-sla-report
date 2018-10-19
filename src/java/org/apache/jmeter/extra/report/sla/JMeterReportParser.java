@@ -65,7 +65,8 @@ public class JMeterReportParser implements Runnable {
                     parseInputAsXml(fis, factory);
                 }
             } catch (Exception e) {
-                System.out.println("Encountered an exception while processing the XML and stop parsing file : " + e.getClass().getName());
+                System.out.println("Encountered an exception while processing the XML and stop parsing file : " + e.getClass()
+                        .getName());
                 break;
             } finally {
                 close(fis);
@@ -105,7 +106,7 @@ public class JMeterReportParser implements Runnable {
                 result.add(sourceFile);
             } else {
 
-                final String[] listedFiles = sourceFile.list(new FilenameFilter() {
+                final File[] listedFiles = sourceFile.listFiles(new FilenameFilter() {
                     public boolean accept(File dir, String name) {
                         final String lowerName = name.toLowerCase();
                         final boolean isJtl = lowerName.endsWith(".jtl");
@@ -114,8 +115,8 @@ public class JMeterReportParser implements Runnable {
                     }
                 });
 
-                for (String listedFile : listedFiles) {
-                    result.add(new File(listedFile));
+                for (File listedFile : listedFiles) {
+                    result.add(listedFile);
                 }
             }
         }

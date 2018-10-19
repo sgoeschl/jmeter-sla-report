@@ -31,6 +31,9 @@ import java.util.Stack;
  */
 public class SampleParser extends AbstractModelParser implements ComponentParser {
 
+    private final int LABEL_LENGTH = 70;
+    private final int RESPONSE_MESSAGE_LENGTH = 120;
+
     public SampleParser(JMeterReportModel model) {
         super(model);
     }
@@ -51,9 +54,9 @@ public class SampleParser extends AbstractModelParser implements ComponentParser
 
         final int duration = Integer.parseInt(attributes.getProperty("t"));
         final Date timestamp = new Date(Long.parseLong(attributes.getProperty("ts")));
-        final String label = attributes.getProperty("lb");
+        final String label = trim(attributes.getProperty("lb", ""), LABEL_LENGTH);
         final String resultCode = attributes.getProperty("rc");
-        final String responseMessage = attributes.getProperty("rm");
+        final String responseMessage = trim(attributes.getProperty("rm"), RESPONSE_MESSAGE_LENGTH);
         final boolean success = Boolean.valueOf(attributes.getProperty("s"));
 
         final SampleElement sampleElement = new SampleElement();
@@ -70,6 +73,13 @@ public class SampleParser extends AbstractModelParser implements ComponentParser
     public void endElement(XMLStreamReader streamReader, Stack<Object> elementStack) {
         final SampleElement sampleElement = (SampleElement) elementStack.peek();
         addElement(sampleElement);
+    }
+
+    private String trim(String input, int maxLength) {
+        if (input == null || input.length() <= maxLength) {
+            return input;
+        }
+        return input.substring(0, maxLength - 2) + "..";
     }
 
 }
