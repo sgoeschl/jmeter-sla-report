@@ -1,7 +1,9 @@
 package org.apache.jmeter.extra.report.sla;
 
+import com.jamonapi.MonKeyImp;
 import com.jamonapi.MonitorComposite;
 import com.jamonapi.utils.Misc;
+import org.apache.commons.lang3.StringEscapeUtils;
 
 import java.net.InetAddress;
 import java.util.ArrayList;
@@ -29,7 +31,7 @@ public class JMeterHtmlReportWriter {
     enum BasicDataColumns {
         LABEL(1, "Label", true),
         UNITS(2, "Units", false),
-        HITS(3, "Tests", true),
+        HITS(3, "Requests", true),
         AVG(4, "Avg", true),
         TOTAL(5, "Total", true),
         STDEV(6, "StdDev", true),
@@ -38,9 +40,9 @@ public class JMeterHtmlReportWriter {
         FIRST_ACCESS(13, "First Access", true),
         LAST_ACCESS(14, "Last Acccess", true);
 
-        int index;
-        String label;
-        boolean isReported;
+        final int index;
+        final String label;
+        final boolean isReported;
 
         BasicDataColumns(int index, String label, boolean isReported) {
             this.index = index;
@@ -75,12 +77,12 @@ public class JMeterHtmlReportWriter {
     private final Map<String, Double> failureMap;
 
     /**
-     * the date of the first test invocation
+     * the date of the first request
      */
     private Date firstAccessDate;
 
     /**
-     * the date of the last test invocation
+     * the date of the last request
      */
     private Date lastAccessDate;
 
@@ -109,7 +111,7 @@ public class JMeterHtmlReportWriter {
         this.locale = (locale != null ? locale : Locale.getDefault());
         this.firstAccessDate = new Date();
         this.lastAccessDate = new Date(0);
-        this.reportTitle = "Load Test Results";
+        this.reportTitle = "Load Test Report";
         this.reportSubtitle = "Designed for use with <a href=\"http://jakarta.apache.org/jmeter\">JMeter</a> and <a href=\"http://ant.apache.org\">Ant</a>.";
 
         this.failureMap = new HashMap<>();
@@ -128,6 +130,7 @@ public class JMeterHtmlReportWriter {
             return "";
 
         final StringBuffer html = new StringBuffer(100000);// guess on report size
+        html.append("<!DOCTYPE html PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" \"http://www.w3.org/TR/html4/loose.dtd\">\n");
         html.append("<html>\n");
         html.append(getHtmlHeadFragment());
         html.append("<body>\n");
@@ -142,6 +145,7 @@ public class JMeterHtmlReportWriter {
         writeErrorSummaryTable(html, monitor, 0, "asc");
         html.append("<hr size=\"1\">");
         writeErrorDetailTable(html, monitor, 0, "asc");
+        writeErrorMessagesTable(html);
         html.append("<hr size=\"1\">");
         writePropertyTable(html, System.getProperties());
         html.append("</body>\n");
@@ -180,11 +184,12 @@ public class JMeterHtmlReportWriter {
         } else if (data instanceof Integer) {
             return String.format(locale, "%,d", (Integer) data);
         } else if (data instanceof String) {
-            return data.toString().replace("(0/0/0)", "");
-        } else {
+            return escapeHtml(data.toString().replace("(0/0/0)", ""));
+        } else if (data instanceof Object) {
             return data.toString();
+        } else {
+            return null;
         }
-
     }
 
     private void writeSummaryTable(StringBuffer html, MonitorComposite monitor) {
@@ -195,7 +200,7 @@ public class JMeterHtmlReportWriter {
 
         final int rows = data.length;
 
-        // determine the first access date of the test
+        // determine the timestamp of the first request
         final int firstAccessIndex = getHeaderIndex(header, "FirstAccess");
         for (int i = 0; i < rows; i++) {
             final Date currFirstAccessDate = (Date) data[i][firstAccessIndex];
@@ -204,7 +209,7 @@ public class JMeterHtmlReportWriter {
             }
         }
 
-        // determine the last access date of the test
+        // determine the timestamp of the last request
         final int lastAccessIndex = getHeaderIndex(header, "LastAccess");
         for (int i = 0; i < rows; i++) {
             final Date currLastAccessDate = (Date) data[i][lastAccessIndex];
@@ -213,11 +218,11 @@ public class JMeterHtmlReportWriter {
             }
         }
 
-        // determine the "Tests"
-        Double nrOfTests = 0.0;
+        // determine the "requests"
+        Double nrOfRequests = 0.0;
         final int hitsHeaderIndex = getHeaderIndex(header, "Hits");
         for (int i = 0; i < rows; i++) {
-            nrOfTests += (Double) data[i][hitsHeaderIndex];
+            nrOfRequests += (Double) data[i][hitsHeaderIndex];
         }
 
         // determine the "Failures"
@@ -230,7 +235,7 @@ public class JMeterHtmlReportWriter {
         }
 
         // determine "Success Rate"
-        final double successRate = 100.0 - (nrOfFailures * 100.0 / nrOfTests);
+        final double successRate = 100.0 - (nrOfFailures * 100.0 / nrOfRequests);
 
         // determine "Average Time"
         double overallTime = 0;
@@ -238,7 +243,7 @@ public class JMeterHtmlReportWriter {
         for (int i = 0; i < rows; i++) {
             overallTime += (Double) data[i][totalHeaderIndex];
         }
-        final double averageTime = overallTime / nrOfTests;
+        final double averageTime = overallTime / nrOfRequests;
 
         // determine "Min Time"
         Double minTime = (double) Long.MAX_VALUE;
@@ -257,14 +262,14 @@ public class JMeterHtmlReportWriter {
         html.append("<h2>Summary</h2>");
         html.append("<table width=\"95%\" cellspacing=\"2\" cellpadding=\"5\" border=\"0\" class=\"details\">\n");
         html.append("<tr valign=\"top\">\n");
-        html.append("<th>Tests</th><th>Failures</th><th>Success Rate</th><th>Average Time</th><th>Min Time</th><th>Max Time</th>\n");
+        html.append("<th>Requests</th><th>Failures</th><th>Success Rate</th><th>Average Time</th><th>Min Time</th><th>Max Time</th>\n");
         html.append("</tr>\n");
         if (nrOfFailures > 0.0) {
             html.append("<tr valign=\"top\" class=\"Failure\">\n");
         } else {
             html.append("<tr valign=\"top\" class=\"\">\n");
         }
-        html.append("<td>").append(format(nrOfTests.intValue())).append("</td>");
+        html.append("<td>").append(format(nrOfRequests.intValue())).append("</td>");
         html.append("<td>").append(format(nrOfFailures.intValue())).append("</td>");
         html.append("<td>").append(String.format(locale, "%3.4f", successRate)).append(" %</td>");
         html.append("<td>").append(format(averageTime)).append(" ms</td>");
@@ -310,8 +315,8 @@ public class JMeterHtmlReportWriter {
 
     private void writePagesDetailTable(StringBuffer html, MonitorComposite monitor, int sortCol, String sortOrder) {
 
-        final String[] header = { "Label", "Tests", "0-10", "10-20", "20-40", "40-80", "80-160", "160-320", "320-640", "640-1280", "1280-2560", "2560-5120", "5120-10240", "10240-20480", ">20480ms" };
-        final int[] headerIndex = { DISPLAY_HEADER_LABEL_INDEX, DISPLAY_HEADER_HITS_INDEX, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30 };
+        final String[] header = {"Label", "Requests", "0-10", "10-20", "20-40", "40-80", "80-160", "160-320", "320-640", "640-1280", "1280-2560", "2560-5120", "5120-10240", "10240-20480", ">20480ms"};
+        final int[] headerIndex = {DISPLAY_HEADER_LABEL_INDEX, DISPLAY_HEADER_HITS_INDEX, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30};
 
         final Object[][] rawData = getDisplayData(monitor, JMeterReportModel.UNIT_MS);
         final Object[][] data = Misc.sort(rawData, sortCol, sortOrder);
@@ -339,6 +344,38 @@ public class JMeterHtmlReportWriter {
                 html.append("<td align='right'>").append(format(data[i][headerIndex[j]])).append("</td>");
             }
             html.append("</tr>\n");
+        }
+
+        html.append("</table>\n");
+    }
+
+    private void writeErrorSummaryTable(StringBuffer html, MonitorComposite monitor, int sortColumn, String sortOrder) {
+
+        final Object[][] rawData = getBasicData(monitor, JMeterReportModel.UNIT_EXCEPTION);
+
+        if (!hasFailures(rawData)) {
+            return;
+        }
+
+        final Object[][] data = Misc.sort(rawData, sortColumn, sortOrder);
+        final int rows = data.length;
+
+        html.append("<h2>Error Summary</h2>");
+        html.append("\n<table width=\"95%\" cellspacing=\"2\" cellpadding=\"5\" border=\"0\" class=\"details\">\n");
+        html.append("<tr>");
+        html.append("<th>").append("Label").append("</th>");
+        html.append("<th>").append("Errors").append("</th>");
+        html.append("</tr>");
+
+        for (int i = 0; i < rows; i++) {
+            final double hits = (Double) data[i][DISPLAY_HEADER_HITS_INDEX];
+
+            if (hits > 0d) {
+                html.append("<tr valign=\"top\" class=\"\">");
+                html.append("<td>").append(data[i][DISPLAY_HEADER_LABEL_INDEX]).append("</td>");// first column
+                html.append("<td align='right'>").append(format(hits)).append("</td>");
+                html.append("</tr>\n");
+            }
         }
 
         html.append("</table>\n");
@@ -382,31 +419,41 @@ public class JMeterHtmlReportWriter {
         html.append("</table>\n");
     }
 
-    private void writeErrorSummaryTable(StringBuffer html, MonitorComposite monitor, int sortColumn, String sortOrder) {
+    private void writeErrorMessagesTable(StringBuffer html) {
 
-        final Object[][] rawData = getBasicData(monitor, JMeterReportModel.UNIT_EXCEPTION);
+        final Map<String, List<MonKeyImp>> errorDetailsMap = model.getErrorMessagesMap();
 
-        if (!hasFailures(rawData)) {
+        if (errorDetailsMap.isEmpty()) {
             return;
         }
 
-        final Object[][] data = Misc.sort(rawData, sortColumn, sortOrder);
-        final int rows = data.length;
+        html.append("<hr size=\"1\">");
 
-        html.append("<h2>Error Summary</h2>");
+        html.append("<h2>Error Messages</h2>");
         html.append("\n<table width=\"95%\" cellspacing=\"2\" cellpadding=\"5\" border=\"0\" class=\"details\">\n");
         html.append("<tr>");
         html.append("<th>").append("Label").append("</th>");
-        html.append("<th>").append("Errors").append("</th>");
-        html.append("</tr>");
+        html.append("<th>").append("Date").append("</th>");
+        html.append("<th>").append("Error Message").append("</th>");
+        html.append("</tr>\n");
 
-        for (int i = 0; i < rows; i++) {
-            final double hits = (Double) data[i][DISPLAY_HEADER_HITS_INDEX];
+        for (String key : errorDetailsMap.keySet()) {
 
-            if (hits > 0d) {
+            final List<MonKeyImp> monKeyImpList = errorDetailsMap.get(key);
+
+            for (MonKeyImp monKey : monKeyImpList) {
+
+                final Object[] details = (Object[]) monKey.getDetails();
+                final String label = (String) details[0];
+                final String errorLabel = (String) details[1];
+                final String errorCode = (String) details[2];
+                final String errorMessage = (String) details[3];
+                final Date timeStamp = (Date) details[4];
+
                 html.append("<tr valign=\"top\" class=\"\">");
-                html.append("<td>").append(data[i][DISPLAY_HEADER_LABEL_INDEX]).append("</td>");// first column
-                html.append("<td align='right'>").append(format(hits)).append("</td>");
+                html.append("<td>").append(format(errorLabel)).append("</td>");
+                html.append("<td>").append(format(timeStamp)).append("</td>");
+                html.append("<td>").append(format(errorMessage)).append("</td>");
                 html.append("</tr>\n");
             }
         }
@@ -432,57 +479,57 @@ public class JMeterHtmlReportWriter {
         html.append("<th>").append("Value").append("</th>");
         html.append("</tr>");
 
-        // report first access date
+        // report first request timestamp
         html.append("<tr valign=\"top\" class=\"\">");
-        html.append("<td>").append("Test Start Date").append("</td>");
-        html.append("<td>").append(this.firstAccessDate).append("</td>");// first column
+        html.append("<td>").append("First Request").append("</td>");
+        html.append("<td>").append(this.firstAccessDate).append("</td>");
         html.append("</tr>\n");
 
-        // report last access date
+        // report last request timestamp
         html.append("<tr valign=\"top\" class=\"\">");
-        html.append("<td>").append("Test End Date").append("</td>");
-        html.append("<td>").append(this.lastAccessDate).append("</td>");// first column
+        html.append("<td>").append("Last Request").append("</td>");
+        html.append("<td>").append(this.lastAccessDate).append("</td>");
         html.append("</tr>\n");
 
-        // test duration
-        final Double testDuration = (this.lastAccessDate.getTime() - this.firstAccessDate.getTime()) / 1000.0;
+        // report duration
+        final Double reportDuration = (this.lastAccessDate.getTime() - this.firstAccessDate.getTime()) / 1000.0;
         html.append("<tr valign=\"top\" class=\"\">");
-        html.append("<td>").append("Test Duration (sec)").append("</td>");
-        html.append("<td>").append(format(testDuration)).append("</td>");// first column
+        html.append("<td>").append("Report Duration (sec)").append("</td>");
+        html.append("<td>").append(format(reportDuration)).append("</td>");
         html.append("</tr>\n");
 
         // current date
         html.append("<tr valign=\"top\" class=\"\">");
         html.append("<td>").append("Report Creation Date").append("</td>");
-        html.append("<td>").append(new Date()).append("</td>");// first column
+        html.append("<td>").append(new Date()).append("</td>");
         html.append("</tr>\n");
 
         // host name
         html.append("<tr valign=\"top\" class=\"\">");
         html.append("<td>").append("host.name").append("</td>");
-        html.append("<td>").append(hostName).append("</td>");// first column
+        html.append("<td>").append(hostName).append("</td>");
         html.append("</tr>\n");
 
         // host address
         html.append("<tr valign=\"top\" class=\"\">");
         html.append("<td>").append("host.address").append("</td>");
-        html.append("<td>").append(hostAddress).append("</td>");// first column
+        html.append("<td>").append(hostAddress).append("</td>");
         html.append("</tr>\n");
 
         // user name
         html.append("<tr valign=\"top\" class=\"\">");
         html.append("<td>").append("user.name").append("</td>");
-        html.append("<td>").append(properties.getProperty("user.name")).append("</td>");// first column
+        html.append("<td>").append(properties.getProperty("user.name")).append("</td>");
         html.append("</tr>\n");
 
         final Enumeration keys = properties.keys();
         while (keys.hasMoreElements()) {
             final String key = (String) keys.nextElement();
-            final String value = (String) properties.get(key);
-            if (key.contains("jmeter")) {
+            final String value = escapeHtml((String) properties.get(key));
+            if (key.contains("jmeter.") || key.contains("report.")) {
                 html.append("<tr valign=\"top\" class=\"\">");
-                html.append("<td>").append(key).append("</td>");// first column
-                html.append("<td>").append(value).append("</td>");// first column
+                html.append("<td>").append(key).append("</td>");
+                html.append("<td>").append(value).append("</td>");
                 html.append("</tr>\n");
             }
         }
@@ -503,7 +550,7 @@ public class JMeterHtmlReportWriter {
     private String getHtmlHeadFragment() {
 
         return "<head>\n" +
-                "<META http-equiv=\"Content-Type\" content=\"text/html; charset=US-ASCII\">\n" +
+                "<META http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\">\n" +
                 "<title>" + getReportTitle() + "</title>\n" +
                 "<style type=\"text/css\">\n" +
                 "\t\t\t\tbody {\n" +
@@ -585,5 +632,9 @@ public class JMeterHtmlReportWriter {
         }
 
         return true;
+    }
+
+    private String escapeHtml(String input) {
+        return StringEscapeUtils.escapeHtml4(input);
     }
 }

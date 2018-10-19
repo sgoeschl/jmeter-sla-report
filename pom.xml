@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>at.it20one.service</groupId>
     <artifactId>jmeter-sla-report</artifactId>
-    <version>1.0.1-SNAPSHOT</version>
+    <version>1.0.3-SNAPSHOT</version>
     <name>JMeter Report</name>
     <inceptionYear>2011</inceptionYear>
     <description>A fast JMeter reporting backend</description>
@@ -25,6 +25,11 @@
                 </exclusion>
             </exclusions>
         </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+            <version>3.3.2</version>
+        </dependency>        
         <!-- Testing dependencies -->
         <dependency>
             <groupId>junit</groupId>

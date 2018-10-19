@@ -20,8 +20,12 @@ package org.apache.jmeter.extra.report.sla;
 import com.jamonapi.MonKeyImp;
 import com.jamonapi.Monitor;
 import com.jamonapi.RangeHolder;
+import org.apache.jmeter.extra.report.sla.utils.BoundedList;
 
 import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Integrates JAMon with JMeter.
@@ -33,7 +37,10 @@ public class JMeterReportModel {
     public static final String UNIT_EXCEPTION = "Exception";
     public static final String UNIT_JMETER_ERRORS = "JMeter Errors";
 
+    private static final int LIMITED_QUEUE_SIZE = 3;
+
     private final MonitorProvider provider;
+    private final Map<String, List<MonKeyImp>> errorMessagesMap = new HashMap<>();
 
     public JMeterReportModel() {
         provider = new MonitorProvider(UNIT_MS, createMSHolder());
@@ -43,6 +50,7 @@ public class JMeterReportModel {
      * @return a customized range holder for measuring the execution time for services.
      */
     private static RangeHolder createMSHolder() {
+
         final RangeHolder result = new RangeHolder("<");
 
         result.add("0_10ms", 10);
@@ -63,37 +71,70 @@ public class JMeterReportModel {
     }
 
     public void addSuccess(String label, Date timestamp, long duration) {
-        final Monitor mon = provider.get(label, UNIT_MS).start();
-
-        if (mon.getFirstAccess().getTime() == 0) {
-            mon.setFirstAccess(timestamp);
-        }
-        mon.add(duration);
-        mon.stop();
-        mon.setLastAccess(timestamp);
+        addMonitor(UNIT_MS, label, timestamp, duration);
     }
 
-    public void addFailure(String label, Date timestamp, long duration, String resultCode, String resultMessage) {
+    public void addFailure(String label, Date timestamp, long duration, String errorCode, String errorMessage) {
 
-        addSuccess(label, timestamp, duration);
+        final String errorLabel = createErrorLabel(label, errorCode);
 
-        final Monitor mon = provider.get(label + " - " + resultCode + " - " + resultMessage, UNIT_JMETER_ERRORS);
+        // keep track of the execution time regardless of the error
+        addMonitor(UNIT_MS, label, timestamp, duration);
 
-        if (mon.getFirstAccess().getTime() == 0) {
-            mon.setFirstAccess(timestamp);
-        }
-        mon.add(duration);
-        mon.stop();
-        mon.setLastAccess(timestamp);
-
-        final Object[] details = new Object[] { label, resultCode, resultMessage };
+        // keep track of the JAMOn exceptions
+        final Object[] details = new Object[] {label, errorLabel, errorCode, errorMessage, timestamp};
         final MonKeyImp monKey = new MonKeyImp(label, details, UNIT_EXCEPTION);
+        getProvider().add(monKey);
 
-        provider.add(monKey);
-        // System.out.println(timestamp + ":" + label + ":" + resultCode + ":" + resultMessage);
+        // additionally keep track of "JMeter" errors
+        addMonitor(UNIT_JMETER_ERRORS, errorLabel, timestamp, duration);
+
+        // assuming that error messages are mostly unique keep track
+        // of the 'LIMITED_QUEUE_SIZE' occurrences
+        if (errorMessage != null && !errorMessage.isEmpty()) {
+            addErrorMessages(label, monKey);
+        }
     }
 
     public MonitorProvider getProvider() {
         return provider;
+    }
+
+    public Map<String, List<MonKeyImp>> getErrorMessagesMap() {
+        return errorMessagesMap;
+    }
+
+    private String createErrorLabel(String label, String errorCode) {
+        if (errorCode == null || errorCode.isEmpty()) {
+            return label;
+        } else {
+            return label + " - " + errorCode;
+        }
+    }
+
+    private Monitor addMonitor(String type, String label, Date timestamp, long duration) {
+
+        final Monitor mon = getProvider().get(label, type).start();
+
+        if (mon.getFirstAccess().getTime() == 0) {
+            mon.setFirstAccess(timestamp);
+        }
+        mon.add(duration);
+        mon.stop();
+        mon.setLastAccess(timestamp);
+
+        return mon;
+    }
+
+    private void addErrorMessages(String label, MonKeyImp monKey) {
+
+        List<MonKeyImp> labelErrorDetails = errorMessagesMap.get(label);
+
+        if (labelErrorDetails == null) {
+            labelErrorDetails = new BoundedList<>(LIMITED_QUEUE_SIZE);
+            errorMessagesMap.put(label, labelErrorDetails);
+        }
+
+        labelErrorDetails.add(monKey);
     }
 }

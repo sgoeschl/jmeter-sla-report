@@ -23,7 +23,7 @@ import org.apache.jmeter.extra.report.sla.element.SampleElement;
 import java.util.Date;
 
 /**
- * Parses an CSV line.
+ * Parses an JMeter CSV line.
  */
 public class CSVSampleParser extends AbstractModelParser {
 

@@ -27,7 +27,7 @@ import java.util.Properties;
 import java.util.Stack;
 
 /**
- * Parses a "sample" element (including httpSample).
+ * Parses a JMeter "sample" element (including httpSample).
  */
 public class SampleParser extends AbstractModelParser implements ComponentParser {
 
