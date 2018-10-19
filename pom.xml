@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>at.it20one.service</groupId>
     <artifactId>jmeter-sla-report</artifactId>
-    <version>1.0.3-SNAPSHOT</version>
+    <version>1.0.3</version>
     <name>JMeter Report</name>
     <inceptionYear>2011</inceptionYear>
     <description>A fast JMeter reporting backend</description>
