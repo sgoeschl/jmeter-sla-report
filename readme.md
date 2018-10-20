@@ -70,7 +70,18 @@ Let's dissect the ANT calls
    * one or more JTL files written by JMeter
 * the remaining "sysproperty" entries prefixed with "jmeter" are added to the reporting section - any system property prefixed with "jmeter" is added to the report automatically so can determine the configuration used to run JMeter (or add any other relevant information)
 
-## 3. The Implementation
+## 4. Command Line Integration
+
+Create a JMeter SLA Report based on `jmeter.jtl` file 
+
+> java -jar jmeter-sla-report-1.0.3-jar-with-dependencies.jar jmeter-report.html jmeter.jtl
+
+Create a JMeter SLA Report based on one or more JTL files found in the given directory
+
+> java -jar jmeter-sla-report-1.0.3-jar-with-dependencies.jar jmeter-report.html directory
+
+
+## 5. The Implementation
 
 A quick overview of the implementation
 
@@ -78,7 +89,7 @@ A quick overview of the implementation
 * The 'httpSample' is used to feed JAMon (see http://jamonapi.sourceforge.net) which calculates the SLA related data
 * When the parsing is finished all the data is pulled from JAMon and written to HTML file with embedded CSS
 
-## 4. Current State
+## 6. Current State
 
 * Tried to contribute it to Apache JMeter to no avail
 * Dumped it on GitHub since this is a much better place than my local hard disk
