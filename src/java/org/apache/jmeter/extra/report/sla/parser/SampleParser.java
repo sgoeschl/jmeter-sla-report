@@ -32,7 +32,7 @@ import java.util.Stack;
 public class SampleParser extends AbstractModelParser implements ComponentParser {
 
     private final int LABEL_LENGTH = 70;
-    private final int RESPONSE_MESSAGE_LENGTH = 120;
+    private final int RESPONSE_MESSAGE_LENGTH = 255;
 
     public SampleParser(JMeterReportModel model) {
         super(model);

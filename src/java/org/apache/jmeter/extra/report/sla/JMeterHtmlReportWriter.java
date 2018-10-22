@@ -3,7 +3,7 @@ package org.apache.jmeter.extra.report.sla;
 import com.jamonapi.MonKeyImp;
 import com.jamonapi.MonitorComposite;
 import com.jamonapi.utils.Misc;
-import org.apache.commons.lang3.StringEscapeUtils;
+import org.apache.commons.text.StringEscapeUtils;
 
 import java.net.InetAddress;
 import java.util.ArrayList;
