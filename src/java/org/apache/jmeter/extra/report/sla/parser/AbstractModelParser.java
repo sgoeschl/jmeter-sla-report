@@ -70,5 +70,4 @@ public abstract class AbstractModelParser {
             return errorCode + " - " + errorMessage;
         }
     }
-
 }

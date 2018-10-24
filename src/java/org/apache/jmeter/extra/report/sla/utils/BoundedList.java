@@ -3,7 +3,8 @@ package org.apache.jmeter.extra.report.sla.utils;
 import java.util.ArrayList;
 
 public class BoundedList<E> extends ArrayList<E> {
-    private int limit;
+
+    private final int limit;
 
     public BoundedList(int limit) {
         this.limit = limit;

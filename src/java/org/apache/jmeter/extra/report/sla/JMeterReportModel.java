@@ -82,7 +82,7 @@ public class JMeterReportModel {
         addMonitor(UNIT_MS, label, timestamp, duration);
 
         // keep track of the JAMOn exceptions
-        final Object[] details = new Object[] {label, errorLabel, errorCode, errorMessage, timestamp};
+        final Object[] details = new Object[] { label, errorLabel, errorCode, errorMessage, timestamp };
         final MonKeyImp monKey = new MonKeyImp(label, details, UNIT_EXCEPTION);
         getProvider().add(monKey);
 

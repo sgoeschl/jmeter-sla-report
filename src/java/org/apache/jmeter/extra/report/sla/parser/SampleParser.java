@@ -31,8 +31,8 @@ import java.util.Stack;
  */
 public class SampleParser extends AbstractModelParser implements ComponentParser {
 
-    private final int LABEL_LENGTH = 70;
-    private final int RESPONSE_MESSAGE_LENGTH = 255;
+    private static final int LABEL_LENGTH = 70;
+    private static final int RESPONSE_MESSAGE_LENGTH = 255;
 
     public SampleParser(JMeterReportModel model) {
         super(model);
@@ -44,6 +44,7 @@ public class SampleParser extends AbstractModelParser implements ComponentParser
      * @param streamReader the Stax stream reader
      * @param elementStack the current element stack
      */
+    @Override
     public Object startElement(XMLStreamReader streamReader, Stack<Object> elementStack) {
 
         // parse attributes of HttpSampler
@@ -70,6 +71,7 @@ public class SampleParser extends AbstractModelParser implements ComponentParser
         return sampleElement;
     }
 
+    @Override
     public void endElement(XMLStreamReader streamReader, Stack<Object> elementStack) {
         final SampleElement sampleElement = (SampleElement) elementStack.peek();
         addElement(sampleElement);
