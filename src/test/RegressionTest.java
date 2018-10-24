@@ -1,6 +1,6 @@
-import junit.framework.Assert;
 import junit.framework.TestCase;
 import org.apache.jmeter.extra.report.sla.Main;
+import org.junit.Assert;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -50,7 +50,7 @@ public class RegressionTest extends TestCase {
         final File actualReportDirectory = new File("./target/actual");
         final File actualOutputFile = new File(actualReportDirectory, expectedOutputFile.getName());
 
-        Main.main(new String[] {actualOutputFile.getAbsolutePath(), inputFile});
+        Main.main(new String[] { actualOutputFile.getAbsolutePath(), inputFile });
 
         final String expectedReportContent = removeRunDependentParts(readAsString(expectedOutputFile));
         final String actualReportContent = removeRunDependentParts(readAsString(actualOutputFile));

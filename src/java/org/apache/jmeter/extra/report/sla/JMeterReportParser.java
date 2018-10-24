@@ -32,6 +32,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -49,6 +50,7 @@ public class JMeterReportParser implements Runnable {
         this.model = model;
     }
 
+    @Override
     public void run() {
 
         final XMLInputFactory factory = XMLInputFactory.newInstance();
@@ -106,6 +108,7 @@ public class JMeterReportParser implements Runnable {
             } else {
 
                 final File[] listedFiles = sourceFile.listFiles(new FilenameFilter() {
+                    @Override
                     public boolean accept(File dir, String name) {
                         final String lowerName = name.toLowerCase();
                         final boolean isJtl = lowerName.endsWith(".jtl");
@@ -114,8 +117,8 @@ public class JMeterReportParser implements Runnable {
                     }
                 });
 
-                for (File listedFile : listedFiles) {
-                    result.add(listedFile);
+                if (listedFiles != null) {
+                    Collections.addAll(result, listedFiles);
                 }
             }
         }
@@ -127,27 +130,23 @@ public class JMeterReportParser implements Runnable {
         this.sourceFiles = sourceFiles;
     }
 
-    private XMLStreamReader close(XMLStreamReader xmlStreamReader) {
+    private void close(XMLStreamReader xmlStreamReader) {
         try {
             if (xmlStreamReader != null) {
                 xmlStreamReader.close();
             }
-            return null;
         } catch (Exception e) {
             System.err.println("Closing the XMLStreamReader failed : " + e.getMessage());
-            return null;
         }
     }
 
-    private FileInputStream close(FileInputStream fis) {
+    private void close(FileInputStream fis) {
         try {
             if (fis != null) {
                 fis.close();
             }
-            return null;
         } catch (Exception e) {
             System.err.println("Closing the FileInputStream failed : " + e.getMessage());
-            return null;
         }
     }
 }

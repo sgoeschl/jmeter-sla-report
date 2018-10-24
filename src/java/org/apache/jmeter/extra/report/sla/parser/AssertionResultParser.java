@@ -31,6 +31,7 @@ import java.util.Stack;
  */
 public class AssertionResultParser implements ComponentParser {
 
+    @Override
     public Object startElement(XMLStreamReader streamReader, Stack<Object> elementStack) throws XMLStreamException {
 
         final AssertionResultElement assertionResultElement = new AssertionResultElement();
@@ -54,6 +55,7 @@ public class AssertionResultParser implements ComponentParser {
         return assertionResultElement;
     }
 
+    @Override
     public void endElement(XMLStreamReader streamReader, Stack<Object> elementStack) {
     }
 }

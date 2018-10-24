@@ -126,8 +126,9 @@ public class JMeterHtmlReportWriter {
 
         final MonitorComposite monitor = model.getProvider().getRoot();
 
-        if (!monitor.hasData())
+        if (!monitor.hasData()) {
             return "";
+        }
 
         final StringBuffer html = new StringBuffer(100000);// guess on report size
         html.append("<!DOCTYPE html PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" \"http://www.w3.org/TR/html4/loose.dtd\">\n");
@@ -246,14 +247,14 @@ public class JMeterHtmlReportWriter {
         final double averageTime = overallTime / nrOfRequests;
 
         // determine "Min Time"
-        Double minTime = (double) Long.MAX_VALUE;
+        double minTime = (double) Long.MAX_VALUE;
         final int minHeaderIndex = getHeaderIndex(header, "Min");
         for (int i = 0; i < rows; i++) {
             minTime = Math.min(minTime, (Double) data[i][minHeaderIndex]);
         }
 
         // determine "Max Time"
-        Double maxTime = (double) Long.MIN_VALUE;
+        double maxTime = (double) Long.MIN_VALUE;
         final int maxHeaderIndex = getHeaderIndex(header, "Max");
         for (int i = 0; i < rows; i++) {
             maxTime = Math.max(maxTime, (Double) data[i][maxHeaderIndex]);
@@ -315,8 +316,8 @@ public class JMeterHtmlReportWriter {
 
     private void writePagesDetailTable(StringBuffer html, MonitorComposite monitor, int sortCol, String sortOrder) {
 
-        final String[] header = {"Label", "Requests", "0-10", "10-20", "20-40", "40-80", "80-160", "160-320", "320-640", "640-1280", "1280-2560", "2560-5120", "5120-10240", "10240-20480", ">20480ms"};
-        final int[] headerIndex = {DISPLAY_HEADER_LABEL_INDEX, DISPLAY_HEADER_HITS_INDEX, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30};
+        final String[] header = { "Label", "Requests", "0-10", "10-20", "20-40", "40-80", "80-160", "160-320", "320-640", "640-1280", "1280-2560", "2560-5120", "5120-10240", "10240-20480", ">20480ms" };
+        final int[] headerIndex = { DISPLAY_HEADER_LABEL_INDEX, DISPLAY_HEADER_HITS_INDEX, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30 };
 
         final Object[][] rawData = getDisplayData(monitor, JMeterReportModel.UNIT_MS);
         final Object[][] data = Misc.sort(rawData, sortCol, sortOrder);
