@@ -74,11 +74,16 @@ Let's dissect the ANT calls
 
 Create a JMeter SLA Report based on `jmeter.jtl` file 
 
-> java -jar jmeter-sla-report-1.0.3-jar-with-dependencies.jar jmeter-report.html jmeter.jtl
+```
+> java -jar ./target/jmeter-sla-report-1.0.3-jar-with-dependencies.jar report.html src/test/data/success.jtl
+```
 
 Create a JMeter SLA Report based on one or more JTL files found in the given directory
 
-> java -jar jmeter-sla-report-1.0.3-jar-with-dependencies.jar jmeter-report.html directory
+```
+> java -jar ./target/jmeter-sla-report-1.0.3-jar-with-dependencies.jar report.html ./src/test/data
+Encountered an exception while processing the XML and stop parsing file : javax.xml.stream.XMLStreamException
+```
 
 
 ## 5. The Implementation
