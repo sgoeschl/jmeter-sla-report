@@ -38,7 +38,7 @@ public class JMeterHtmlReportWriter {
         MIN_TIME(8, "Min Time", true),
         MAX_TIME(9, "Max Time", true),
         FIRST_ACCESS(13, "First Access", true),
-        LAST_ACCESS(14, "Last Acccess", true);
+        LAST_ACCESS(14, "Last Access", true);
 
         final int index;
         final String label;
