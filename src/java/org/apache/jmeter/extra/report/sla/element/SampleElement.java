@@ -32,6 +32,7 @@ public class SampleElement {
     private String resultCode;
     private String responseMessage;
     private boolean success;
+    private long bytesReceived = 0;
     private final List<AssertionResultElement> assertionResultList = new ArrayList<>();
 
     public long getDuration() {
@@ -56,6 +57,10 @@ public class SampleElement {
 
     public boolean isSuccess() {
         return success;
+    }
+
+    public long getBytesReceived() {
+        return bytesReceived;
     }
 
     public List<AssertionResultElement> getAssertionResultList() {
@@ -84,5 +89,9 @@ public class SampleElement {
 
     public void setSuccess(boolean success) {
         this.success = success;
+    }
+
+    public void setBytesReceived(long bytesReceived) {
+        this.bytesReceived = bytesReceived;
     }
 }

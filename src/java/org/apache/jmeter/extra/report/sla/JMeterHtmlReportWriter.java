@@ -29,16 +29,16 @@ public class JMeterHtmlReportWriter {
     public static final int DISPLAY_HEADER_LASTACCESS_INDEX = 14;
 
     enum BasicDataColumns {
-        LABEL(1, "Label", true),
-        UNITS(2, "Units", false),
-        HITS(3, "Requests", true),
+        LABEL(DISPLAY_HEADER_LABEL_INDEX, "Label", true),
+        UNITS(DISPLAY_HEADER_UNITS_INDEX, "Units", false),
+        HITS(DISPLAY_HEADER_HITS_INDEX, "Requests", true),
         AVG(4, "Avg", true),
         TOTAL(5, "Total", true),
         STDEV(6, "StdDev", true),
         MIN_TIME(8, "Min Time", true),
         MAX_TIME(9, "Max Time", true),
-        FIRST_ACCESS(13, "First Access", true),
-        LAST_ACCESS(14, "Last Access", true);
+        FIRST_ACCESS(DISPLAY_HEADER_FIRSTACCESS_INDEX, "First Access", true),
+        LAST_ACCESS(DISPLAY_HEADER_LASTACCESS_INDEX, "Last Access", true);
 
         final int index;
         final String label;
@@ -125,6 +125,7 @@ public class JMeterHtmlReportWriter {
     public String createReport() {
 
         final MonitorComposite monitor = model.getProvider().getRoot();
+        final MonitorComposite kikoByteReceivedMonitor = model.getKiloBytesReceivedMonitorProvider().getRoot();
 
         if (!monitor.hasData()) {
             return "";
@@ -142,6 +143,8 @@ public class JMeterHtmlReportWriter {
         writePagesOverviewTable(html, monitor, this.sortColumn, this.sortOrder);
         html.append("<hr size=\"1\">");
         writePagesDetailTable(html, monitor, this.sortColumn, this.sortOrder);
+        html.append("<hr size=\"1\">");
+        writeKiloBytesReceivedDetailTable(html, kikoByteReceivedMonitor, DISPLAY_HEADER_LABEL_INDEX, this.sortOrder);
         html.append("<hr size=\"1\">");
         writeErrorSummaryTable(html, monitor, 0, "asc");
         html.append("<hr size=\"1\">");
@@ -325,6 +328,42 @@ public class JMeterHtmlReportWriter {
         final int cols = header.length;
 
         html.append("<h2>Pages Detail Table (ms)</h2>");
+        html.append("\n<table width=\"95%\" cellspacing=\"2\" cellpadding=\"5\" border=\"0\" class=\"details\">\n");
+        html.append("<tr>");
+        for (String headerName : header) {
+            html.append("<th>").append(headerName).append("</th>");
+        }
+        html.append("</tr>");
+
+        for (int i = 0; i < rows; i++) {
+            final String label = data[i][DISPLAY_HEADER_LABEL_INDEX].toString();
+            final double nrOfFailures = getNrOfFailures(label);
+            if (nrOfFailures > 0.0) {
+                html.append("<tr valign=\"top\" class=\"Failure\">");
+            } else {
+                html.append("<tr valign=\"top\">");
+            }
+            html.append("<td>").append(label).append("</td>");// first column
+            for (int j = 1; j < cols; j++) {
+                html.append("<td align='right'>").append(format(data[i][headerIndex[j]])).append("</td>");
+            }
+            html.append("</tr>\n");
+        }
+
+        html.append("</table>\n");
+    }
+
+    private void writeKiloBytesReceivedDetailTable(StringBuffer html, MonitorComposite monitor, int sortCol, String sortOrder) {
+
+        final String[] header = { "Label", "Requests", "0-1", "1-2", "2-4", "4-8", "8-16", "16-32", "32-64", "64-128", "128-256", "256-512", "512-1024", "1024-2048", ">20480 KB" };
+        final int[] headerIndex = { DISPLAY_HEADER_LABEL_INDEX, DISPLAY_HEADER_HITS_INDEX, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30 };
+
+        final Object[][] rawData = getDisplayData(monitor, JMeterReportModel.UNIT_KB);
+        final Object[][] data = Misc.sort(rawData, sortCol, sortOrder);
+        final int rows = data.length;
+        final int cols = header.length;
+
+        html.append("<h2>Kilobytes Received Detail Table (KB)</h2>");
         html.append("\n<table width=\"95%\" cellspacing=\"2\" cellpadding=\"5\" border=\"0\" class=\"details\">\n");
         html.append("<tr>");
         for (String headerName : header) {

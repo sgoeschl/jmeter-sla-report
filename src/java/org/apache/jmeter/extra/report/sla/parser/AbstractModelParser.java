@@ -36,9 +36,10 @@ public abstract class AbstractModelParser {
         final String label = sampleElement.getLabel();
         final Date timestamp = sampleElement.getTimestamp();
         final long duration = sampleElement.getDuration();
+        final long bytesReceived = sampleElement.getBytesReceived();
 
         if (sampleElement.isSuccess()) {
-            model.addSuccess(label, timestamp, duration);
+            model.addSuccess(label, timestamp, duration, bytesReceived);
         } else {
             final String resultCode;
             final String responseMessage;

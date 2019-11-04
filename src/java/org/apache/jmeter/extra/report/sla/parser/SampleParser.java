@@ -58,7 +58,8 @@ public class SampleParser extends AbstractModelParser implements ComponentParser
         final String label = trim(attributes.getProperty("lb", ""), LABEL_LENGTH);
         final String resultCode = attributes.getProperty("rc");
         final String responseMessage = trim(attributes.getProperty("rm"), RESPONSE_MESSAGE_LENGTH);
-        final boolean success = Boolean.valueOf(attributes.getProperty("s"));
+        final boolean success = Boolean.parseBoolean(attributes.getProperty("s"));
+        final int bytesReceived = Integer.parseInt(attributes.getProperty("by", "0"));
 
         final SampleElement sampleElement = new SampleElement();
         sampleElement.setDuration(duration);
@@ -67,6 +68,7 @@ public class SampleParser extends AbstractModelParser implements ComponentParser
         sampleElement.setResultCode(resultCode);
         sampleElement.setResponseMessage(responseMessage);
         sampleElement.setSuccess(success);
+        sampleElement.setBytesReceived(bytesReceived);
 
         return sampleElement;
     }
