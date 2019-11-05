@@ -20,16 +20,21 @@ package org.apache.jmeter.extra.report.sla.parser;
 import org.apache.jmeter.extra.report.sla.JMeterReportModel;
 import org.apache.jmeter.extra.report.sla.element.SampleElement;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
+
+import static java.lang.Boolean.parseBoolean;
 
 /**
  * Parses an JMeter CSV line.
  */
 public class CSVSampleParser extends AbstractModelParser {
 
+    private final SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd hh:mm:ss,SSS");
+
     // time, exectime msec, sampler nanme, http status, http msg, thread name, ?, success, ?, ? 
-    private static final int DURATION_INDEX = 1;
     private static final int TIMESTAMP_INDEX = 0;
+    private static final int DURATION_INDEX = 1;
     private static final int LABEL_INDEX = 2;
     private static final int HTTP_CODE_INDEX = 3;
     private static final int HTTP_MSG_INDEX = 4;
@@ -41,18 +46,19 @@ public class CSVSampleParser extends AbstractModelParser {
 
     /**
      * 1329852757203,128,Initialize,200,OK,Setup 1-1,text,true,0,0
+     * 2019/02/26 11:55:33,538;3020;ENROLLMENT;200;;GeorgeGo_Enrollment 1-3;text;true;1384;9;9;https://georgego-perf.slsp.sk/testclient/test/locker/umbrella/skperf/enrollAndSign;2984;sk06prf04v.dctest.slsp.sk;0;110095963;null;null;null;null;172.16.8.156;null
      *
      * @param line the line in the CSV
      */
     public void parse(String line) {
-        final String[] parts = line.split(",");
+        final String[] parts = line.split(";");
 
         final int duration = Integer.parseInt(parts[DURATION_INDEX]);
-        final Date timestamp = new Date(Long.parseLong(parts[TIMESTAMP_INDEX]));
+        final Date timestamp = parseTimestamp(parts[TIMESTAMP_INDEX]);
         final String label = parts[LABEL_INDEX];
         final String resultCode = parts[HTTP_CODE_INDEX];
         final String responseMessage = parts[HTTP_MSG_INDEX];
-        final boolean success = Boolean.valueOf(parts[STATUS_INDEX]);
+        final boolean success = parseBoolean(parts[STATUS_INDEX]);
 
         final SampleElement sampleElement = new SampleElement();
 
@@ -64,6 +70,20 @@ public class CSVSampleParser extends AbstractModelParser {
         sampleElement.setSuccess(success);
 
         addElement(sampleElement);
+    }
+
+    private Date parseTimestamp(String value) {
+        try {
+            if(value.contains(":")) {
+                return sdf.parse(value);
+            }
+            else {
+                return new Date(Long.parseLong(value));
+            }
+        }
+        catch (Exception e) {
+            throw new RuntimeException("Parsing the following date failed: " + value, e);
+        }
     }
 
 }
