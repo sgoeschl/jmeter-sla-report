@@ -51,7 +51,7 @@ public class CSVSampleParser extends AbstractModelParser {
      * @param line the line in the CSV
      */
     public void parse(String line) {
-        final String[] parts = line.split(";");
+        final String[] parts = line.split(",");
 
         final int duration = Integer.parseInt(parts[DURATION_INDEX]);
         final Date timestamp = parseTimestamp(parts[TIMESTAMP_INDEX]);
