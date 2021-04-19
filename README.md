@@ -23,8 +23,8 @@ ant test
 
 This builds the 'jmeter-sla-report' library and generates three SLA reports using
 
-* JMeter JTL files (aka XML)
-* JMeter CSV file
+* JMeter JTL files (having a `xml` extension)
+* JMeter CSV file (having a `csv` extension)
 
 whereas the following JMeter SLA reports are generated
 
@@ -32,7 +32,7 @@ whereas the following JMeter SLA reports are generated
 * ./target/report-csv-success.html
 * ./target/report-xml-failure.html
 
-Afterwards you see a report similiar to the image below
+Afterwards you see a report similar to the image below
 
 ![JMeter HTML Report](./src/site/images/access-log-sla-report.png "HTML Report")
 
@@ -75,16 +75,15 @@ Let's dissect the ANT calls
 Create a JMeter SLA Report based on `jmeter.jtl` file 
 
 ```
-> java -jar ./target/jmeter-sla-report-1.0.3-jar-with-dependencies.jar report.html src/test/data/success.jtl
+> java -jar ./target/jmeter-sla-report-1.0.5-jar-with-dependencies.jar report.html src/test/data/success.jtl
 ```
 
 Create a JMeter SLA Report based on one or more JTL files found in the given directory
 
 ```
-> java -jar ./target/jmeter-sla-report-1.0.3-jar-with-dependencies.jar report.html ./src/test/data
+> java -jar ./target/jmeter-sla-report-1.0.5-jar-with-dependencies.jar report.html ./src/test/data
 Encountered an exception while processing the XML and stop parsing file : javax.xml.stream.XMLStreamException
 ```
-
 
 ## 5. The Implementation
 

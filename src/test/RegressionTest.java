@@ -77,7 +77,5 @@ public class RegressionTest extends TestCase {
         } finally {
             inputStream.close();
         }
-
     }
-
 }

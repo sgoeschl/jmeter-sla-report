@@ -29,12 +29,12 @@ import java.util.Stack;
 /**
  * Parses a JMeter "sample" element (including httpSample).
  */
-public class SampleParser extends AbstractModelParser implements ComponentParser {
+public class XmlSampleParser extends AbstractModelParser implements ComponentParser {
 
     private static final int LABEL_LENGTH = 70;
     private static final int RESPONSE_MESSAGE_LENGTH = 255;
 
-    public SampleParser(JMeterReportModel model) {
+    public XmlSampleParser(JMeterReportModel model) {
         super(model);
     }
 
