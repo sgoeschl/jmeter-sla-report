@@ -1,4 +1,4 @@
-import org.apache.jmeter.extra.report.sla.Main;
+import com.github.sgoeschl.jmeter.report.sla.Main;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -60,12 +60,12 @@ public class RegressionTest {
 
     @Test(expected = RuntimeException.class)
     public void shouldFailForNoJtlXmlFile() throws Exception {
-        Main.onMain(new String[] { "./target/report.html", "pom.xml" });
+        Main.onMain(new String[] { "./target/empty.html", "pom.xml" });
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void shouldFailForNoEmptyCsvFile() throws Exception {
-        Main.onMain(new String[] { "./target/report.html", "src/test/data/empty.csv" });
+        Main.onMain(new String[] { "./target/empty.html", "src/test/data/empty.csv" });
     }
 
     private void runReportAndCompare(String inputFile, String expectedOutputFileName)

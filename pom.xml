@@ -3,14 +3,55 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.github.sgoeschl.jmeter.extra</groupId>
     <artifactId>jmeter-sla-report</artifactId>
-    <version>1.0.5-SNAPSHOT</version>
-    <name>JMeter Report</name>
+    <version>1.0.5</version>
+    <name>JMeter SLA Report</name>
     <inceptionYear>2011</inceptionYear>
-    <description>A fast JMeter reporting backend</description>
+    <description>JMeter SLA Reporting Backend</description>
+    <url>https://github.com/sgoeschl/jmeter-sla-report/</url>
+
+    <issueManagement>
+        <system>Gihub</system>
+        <url>https://github.com/sgoeschl/jmeter-sla-report/issues/</url>
+    </issueManagement>
+
+    <licenses>
+        <license>
+            <name>Apache License, Version 2.0</name>
+            <url>https://www.apache.org/licenses/LICENSE-2.0.txt</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+
+    <developers>
+        <developer>
+            <name>Siegfried Goeschl</name>
+            <organization>ASF</organization>
+            <organizationUrl>https://www.apache.org</organizationUrl>
+        </developer>
+    </developers>
+
+    <scm>
+        <url>https://github.com/sgoeschl/jmeter-sla-report</url>
+        <connection>scm:git:git://github.com/sgoeschl/jmeter-sla-report.git</connection>
+        <developerConnection>scm:git:git@github.com:sgoeschl/jmeter-sla-report.git</developerConnection>
+        <tag>HEAD</tag>
+    </scm>
+
+    <distributionManagement>
+        <snapshotRepository>
+            <id>ossrh</id>
+            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+        </snapshotRepository>
+        <repository>
+            <id>ossrh</id>
+            <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+        </repository>
+    </distributionManagement>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <java.version>1.8</java.version>
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>1.8</maven.compiler.target>
     </properties>
 
     <dependencies>
@@ -50,24 +91,25 @@
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-site-plugin</artifactId>
+                <version>3.9.1</version>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.8.0</version>
-                <configuration>
-                    <source>${java.version}</source>
-                    <target>${java.version}</target>
-                </configuration>
+                <version>3.8.1</version>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-assembly-plugin</artifactId>
-                <version>3.1.0</version>
+                <version>3.3.0</version>
                 <configuration>
                     <descriptorRefs>
                         <descriptorRef>jar-with-dependencies</descriptorRef>
                     </descriptorRefs>
                     <archive>
                         <manifest>
-                            <mainClass>org.apache.jmeter.extra.report.sla.Main</mainClass>
+                            <mainClass>com.github.sgoeschl.jmeter.report.sla.Main</mainClass>
                         </manifest>
                     </archive>
                 </configuration>
@@ -83,4 +125,13 @@
             </plugin>
         </plugins>
     </build>
+    <reporting>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-project-info-reports-plugin</artifactId>
+                <version>3.1.1</version>
+            </plugin>
+        </plugins>
+    </reporting>
 </project>
