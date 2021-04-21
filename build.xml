@@ -8,50 +8,50 @@
 
 <project name="jmeter-sla-report" default="test" basedir=".">
 
-  <!-- the directory where generated output goes -->
-  <property name="project.build.directory" value="${basedir}/target" />
+    <!-- the directory where generated output goes -->
+    <property name="project.build.directory" value="${basedir}/target" />
 
-  <!-- setup the class path to run the report assuming that the Maven build succeeded -->
-  <path id="project.class.path">
-    <fileset dir="${basedir}/lib">
-      <include name="*.jar"/>
-    </fileset>    
-    <fileset dir="${basedir}/target">
-      <include name="*.jar"/>
-    </fileset>        
-  </path>		
-      
-  <!-- =================================================================== -->
-  <!-- General                                                             -->
-  <!-- =================================================================== -->
-  
-  <target name="test" description="Run the tests to generate JMeter SLA reports" depends="report-xml-success,report-csv-success,report-xml-failure"/>  
+    <!-- setup the class path to run the report -->
+    <path id="project.class.path">
+        <fileset dir="${basedir}/lib">
+            <include name="*.jar" />
+        </fileset>
+        <fileset dir="${basedir}/dist">
+            <include name="jmeter-sla-report-1.0.5.jar" />
+        </fileset>
+    </path>
 
-  <target name="report-xml-success" description="Report with XML JMeter file">
-      <mkdir dir="${project.build.directory}"/>
-      <java classname="org.apache.jmeter.extra.report.sla.Main" classpathref="project.class.path">
-        <arg value="${project.build.directory}/report-xml-success.html"/>        
-        <arg value="${basedir}/src/test/data/success.jtl"/>
-        <sysproperty key="jmeter.something" value="report-xml-success"/>
-      </java>        
-  </target>  
+    <!-- =================================================================== -->
+    <!-- General                                                             -->
+    <!-- =================================================================== -->
 
-  <target name="report-csv-success" description="Report with CSV JMeter file">
-      <mkdir dir="${project.build.directory}"/>
-      <java classname="org.apache.jmeter.extra.report.sla.Main" classpathref="project.class.path">
-        <arg value="${project.build.directory}/report-csv-success.html"/>        
-        <arg value="${basedir}/src/test/data/success.csv"/>
-        <sysproperty key="jmeter.something" value="report-csv-success"/>        
-      </java>        
-  </target>  
+    <target name="test" description="Run the tests to generate JMeter SLA reports" depends="report-xml-success,report-csv-success,report-xml-failure" />
 
-  <target name="report-xml-failure" description="Report with XML JMeter file having test failures">
-      <mkdir dir="${project.build.directory}"/>
-      <java classname="org.apache.jmeter.extra.report.sla.Main" classpathref="project.class.path">
-        <arg value="${project.build.directory}/report-xml-failure.html"/>        
-        <arg value="${basedir}/src/test/data/failure.jtl"/>
-        <sysproperty key="jmeter.something" value="report-xml-failure"/>        
-      </java>        
-  </target>  
-  
+    <target name="report-xml-success" description="Report with XML JMeter file">
+        <mkdir dir="${project.build.directory}" />
+        <java classname="com.github.sgoeschl.jmeter.report.sla.Main" classpathref="project.class.path">
+            <arg value="${project.build.directory}/report-xml-success.html" />
+            <arg value="${basedir}/src/test/data/success.jtl" />
+            <sysproperty key="jmeter.something" value="report-xml-success" />
+        </java>
+    </target>
+
+    <target name="report-csv-success" description="Report with CSV JMeter file">
+        <mkdir dir="${project.build.directory}" />
+        <java classname="com.github.sgoeschl.jmeter.report.sla.Main" classpathref="project.class.path">
+            <arg value="${project.build.directory}/report-csv-success.html" />
+            <arg value="${basedir}/src/test/data/success.csv" />
+            <sysproperty key="jmeter.something" value="report-csv-success" />
+        </java>
+    </target>
+
+    <target name="report-xml-failure" description="Report with XML JMeter file having test failures">
+        <mkdir dir="${project.build.directory}" />
+        <java classname="com.github.sgoeschl.jmeter.report.sla.Main" classpathref="project.class.path">
+            <arg value="${project.build.directory}/report-xml-failure.html" />
+            <arg value="${basedir}/src/test/data/failure.jtl" />
+            <sysproperty key="jmeter.something" value="report-xml-failure" />
+        </java>
+    </target>
+
 </project>

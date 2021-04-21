@@ -10,3 +10,4 @@ target/
 .classpath/
 .settings/
 .idea/
+report.html

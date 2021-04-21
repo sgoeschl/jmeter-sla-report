@@ -1,3 +1,4 @@
+timeStamp,elapsed,label,responseCode,responseMessage,threadName,dataType,success,bytes,sentBytes
 1329852757203,128,Initialize,200,OK,Setup 1-1,text,true,0,0
 1329852758286,32,Video:InsertTollTransactions,200,OK,RSS 2-1,text,true,1312,32
 1329852758322,7,Video:InsertVehiclePassage,200,OK,RSS 2-1,text,true,1945,6
