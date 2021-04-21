@@ -13,7 +13,7 @@ public class JMeterReportParserTest extends TestCase {
         final JMeterReportParser parser = new JMeterReportParser(null);
         parser.setSourceFiles(singletonList(new File("src/test/data")));
         final List<File> sourceFiles = parser.getSourceFiles();
-        assertEquals(5, sourceFiles.size());
+        assertEquals(6, sourceFiles.size());
     }
 
 }

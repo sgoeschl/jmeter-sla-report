@@ -1,6 +1,6 @@
-import junit.framework.TestCase;
 import org.apache.jmeter.extra.report.sla.Main;
 import org.junit.Assert;
+import org.junit.Test;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -9,7 +9,7 @@ import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
 import java.nio.charset.Charset;
 
-public class RegressionTest extends TestCase {
+public class RegressionTest {
 
     static {
         System.setProperty("user.timezone", "Europe/Vienna");
@@ -19,28 +19,53 @@ public class RegressionTest extends TestCase {
 
     private static final String MARKER = "<h2>Report Properties</h2>";
 
-    public void testSuccess() throws Exception {
+    @Test
+    public void testSuccessJtlReport() throws Exception {
         runReportAndCompare("src/test/data/success.jtl", "src/test/data/expected-success-result.html");
     }
 
-    public void testError() throws Exception {
+    @Test
+    public void testErrorJtlReport() throws Exception {
         runReportAndCompare("src/test/data/error.jtl",
                 "src/test/data/expected-error-result.html");
     }
 
-    public void testFailure() throws Exception {
+    @Test
+    public void testFailureJtlReport() throws Exception {
         runReportAndCompare("src/test/data/failure.jtl",
                 "src/test/data/expected-failure-result.html");
     }
 
-    public void testIncomplete() throws Exception {
+    @Test
+    public void testIncompleteJtlReport() throws Exception {
         runReportAndCompare("src/test/data/incomplete.jtl",
                 "src/test/data/expected-incomplete-result.html");
     }
 
-    public void testSuccessCsv() throws Exception {
+    @Test
+    public void testSuccessCsvReport() throws Exception {
         runReportAndCompare("src/test/data/success.csv",
                 "src/test/data/expected-success-csv-result.html");
+    }
+
+    @Test(expected = RuntimeException.class)
+    public void shouldThrowRuntimeExceptionWhenSourceFileIsNotFound() throws Exception {
+        Main.onMain(new String[] { "./target/report.html", "does-not-exist.jtl" });
+    }
+
+    @Test(expected = RuntimeException.class)
+    public void shouldFailIfNoSourceFilesAreFound() throws Exception {
+        Main.onMain(new String[] { "./target/report.html" });
+    }
+
+    @Test(expected = RuntimeException.class)
+    public void shouldFailForNoJtlXmlFile() throws Exception {
+        Main.onMain(new String[] { "./target/report.html", "pom.xml" });
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void shouldFailForNoEmptyCsvFile() throws Exception {
+        Main.onMain(new String[] { "./target/report.html", "src/test/data/empty.csv" });
     }
 
     private void runReportAndCompare(String inputFile, String expectedOutputFileName)
@@ -50,7 +75,7 @@ public class RegressionTest extends TestCase {
         final File actualReportDirectory = new File("./target/actual");
         final File actualOutputFile = new File(actualReportDirectory, expectedOutputFile.getName());
 
-        Main.main(new String[] { actualOutputFile.getAbsolutePath(), inputFile });
+        Main.onMain(new String[] { actualOutputFile.getAbsolutePath(), inputFile });
 
         final String expectedReportContent = removeRunDependentParts(readAsString(expectedOutputFile));
         final String actualReportContent = removeRunDependentParts(readAsString(actualOutputFile));

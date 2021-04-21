@@ -286,7 +286,14 @@ public class JMeterHtmlReportWriter {
     private void writePagesOverviewTable(StringBuffer html, MonitorComposite monitor, int sortCol, String sortOrder) {
 
         final List<BasicDataColumns> reportColumns = BasicDataColumns.getReportedColumns();
-        final Object[][] data = Misc.sort(getBasicData(monitor, JMeterReportModel.UNIT_MS), sortCol, sortOrder);
+        final Object[][] basicData = getBasicData(monitor, JMeterReportModel.UNIT_MS);
+
+        if (basicData.length == 0)  {
+            throw new IllegalArgumentException("The JMeter report model does not contain any data");
+        }
+
+        final Object[][] data = Misc.sort(basicData, sortCol, sortOrder);
+
         final int rows = data.length;
         final int cols = reportColumns.size();
 

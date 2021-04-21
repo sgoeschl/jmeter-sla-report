@@ -55,21 +55,25 @@ public class JMeterReportParser implements Runnable {
     @Override
     public void run() {
 
+        FileInputStream fis = null;
         final XMLInputFactory factory = XMLInputFactory.newInstance();
+        final List<File> sourceFiles = getSourceFiles();
 
-        for (File sourceFile : getSourceFiles()) {
-            FileInputStream fis = null;
+        if (sourceFiles == null || sourceFiles.isEmpty()) {
+            throw new RuntimeException("No source files defined");
+        }
+
+        for (File sourceFile : sourceFiles) {
             try {
                 fis = new FileInputStream(sourceFile);
-
-                if (sourceFile.getName().endsWith(".csv")) {
+                if (sourceFile.getName().toLowerCase().endsWith(".csv")) {
                     parseInputAsCsv(fis);
                 } else {
                     parseInputAsXml(fis, factory);
                 }
             } catch (Exception e) {
-                System.out.println("Encountered an exception while processing the XML and stop parsing file : " + e.getClass()
-                        .getName());
+                final String msg = "Exception while parsing the source files : " + e.getMessage();
+                System.out.println(msg);
                 break;
             } finally {
                 close(fis);
@@ -78,8 +82,8 @@ public class JMeterReportParser implements Runnable {
     }
 
     private void parseInputAsCsv(InputStream is) throws IOException {
-        final CsvSampleParser csvSampleParser = new CsvSampleParser(model);
         final Reader reader = new InputStreamReader(is);
+        final CsvSampleParser csvSampleParser = new CsvSampleParser(model);
         final CSVParser csvParser = CSVFormat.DEFAULT.withFirstRecordAsHeader().parse(reader);
 
         for (CSVRecord csvRecord : csvParser) {
@@ -98,6 +102,9 @@ public class JMeterReportParser implements Runnable {
             staxParser.registerParser("httpSample", new XmlSampleParser(model));
             staxParser.registerParser("assertionResult", new XmlAssertionResultParser());
             staxParser.parseElement(xmlStreamReader);
+        } catch (Exception e) {
+            final String msg = "Ignoring exception while processing XML file : " + e.getMessage();
+            System.err.println(msg);
         } finally {
             close(xmlStreamReader);
         }

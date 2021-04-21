@@ -31,10 +31,27 @@ import java.util.Locale;
 public class Main {
 
     public static void main(String args[]) throws Exception {
+        try {
+            onMain(args);
+        } catch (Exception e) {
+            System.err.println("Failed to create JMeter SLA report: " + e.getMessage());
+            System.exit(1);
+        }
+    }
+
+    public static int onMain(String args[]) throws Exception {
+
+        if (args == null || args.length < 1) {
+            System.err.println("Expecting at least one command-line argument");
+            System.err.println("Usage: java -jar jmeter-sla-report-1.0.5.jar output [sources]*");
+            return 1;
+        }
+
         final File reportFile = new File(args[0]);
         final List<File> sourceFiles = getSourceFiles(args);
         final JMeterReportModel reportModel = createReportModel(sourceFiles);
         createReport(reportFile, sourceFiles.get(0).getAbsolutePath(), reportModel);
+        return 0;
     }
 
     private static List<File> getSourceFiles(String args[]) {
@@ -49,8 +66,8 @@ public class Main {
         for (int i = 1; i < args.length; i++) {
             final File sourceFile = new File(args[i]);
             if (!sourceFile.exists()) {
-                System.err.println("The following JMeter JTL file was not found : " + sourceFile.getAbsolutePath());
-                System.exit(1);
+                final String msg = "The following JMeter JTL file was not found : " + sourceFile.getAbsolutePath();
+                throw new RuntimeException(msg);
             } else {
                 sourceFiles.add(sourceFile);
             }
