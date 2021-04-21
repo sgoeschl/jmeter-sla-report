@@ -44,6 +44,7 @@
         </dependency>
     </dependencies>
     <build>
+        <defaultGoal>clean install</defaultGoal>
         <sourceDirectory>${basedir}/src/java</sourceDirectory>
         <testSourceDirectory>${basedir}/src/test</testSourceDirectory>
         <plugins>
