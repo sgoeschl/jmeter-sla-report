@@ -39,8 +39,9 @@ public class XmlSampleParser extends AbstractModelParser implements ComponentPar
     }
 
     /**
-     * <httpSample t="4" lt="4" ts="1301400114405" s="true" lb="Reporting.EnumGroupReport" rc="200" rm="OK" tn="CRM 1-2" dt="text" by="2469"/>
-     *
+     * <pre>
+     * &lt;httpSample t="4" lt="4" ts="1301400114405" s="true" lb="Reporting.EnumGroupReport" rc="200" rm="OK" tn="CRM 1-2" dt="text" by="2469"/&gt;
+     * </pre>
      * @param streamReader the Stax stream reader
      * @param elementStack the current element stack
      */

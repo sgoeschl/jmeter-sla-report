@@ -1,18 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <groupId>com.github.sgoeschl.jmeter.extra</groupId>
+
+    <groupId>com.github.sgoeschl.jmeter</groupId>
     <artifactId>jmeter-sla-report</artifactId>
-    <version>1.0.5</version>
+    <version>1.0.6-SNAPSHOT</version>
+    <packaging>jar</packaging>
+
     <name>JMeter SLA Report</name>
     <inceptionYear>2011</inceptionYear>
     <description>JMeter SLA Reporting Backend</description>
     <url>https://github.com/sgoeschl/jmeter-sla-report/</url>
-
-    <issueManagement>
-        <system>Gihub</system>
-        <url>https://github.com/sgoeschl/jmeter-sla-report/issues/</url>
-    </issueManagement>
 
     <licenses>
         <license>
@@ -30,10 +28,15 @@
         </developer>
     </developers>
 
+    <issueManagement>
+        <system>Gihub</system>
+        <url>https://github.com/sgoeschl/jmeter-sla-report/issues/</url>
+    </issueManagement>
+
     <scm>
-        <url>https://github.com/sgoeschl/jmeter-sla-report</url>
+        <url>https://github.com/sgoeschl/jmeter-sla-report/tree/master</url>
         <connection>scm:git:git://github.com/sgoeschl/jmeter-sla-report.git</connection>
-        <developerConnection>scm:git:git@github.com:sgoeschl/jmeter-sla-report.git</developerConnection>
+        <developerConnection>scm:git:ssh@github.com:sgoeschl/jmeter-sla-report.git</developerConnection>
         <tag>HEAD</tag>
     </scm>
 
@@ -123,6 +126,43 @@
                     </execution>
                 </executions>
             </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <version>3.2.0</version>
+                <executions>
+                    <execution>
+                        <id>attach-sources</id>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>3.2.0</version>
+                <executions>
+                    <execution>
+                        <id>attach-javadocs</id>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.sonatype.plugins</groupId>
+                <artifactId>nexus-staging-maven-plugin</artifactId>
+                <version>1.6.7</version>
+                <extensions>true</extensions>
+                <configuration>
+                    <serverId>ossrh</serverId>
+                    <nexusUrl>https://s01.oss.sonatype.org/</nexusUrl>
+                    <autoReleaseAfterClose>false</autoReleaseAfterClose>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
     <reporting>
@@ -134,4 +174,28 @@
             </plugin>
         </plugins>
     </reporting>
+
+    <profiles>
+        <profile>
+            <id>release</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-gpg-plugin</artifactId>
+                        <version>3.2.0</version>
+                        <executions>
+                            <execution>
+                                <id>sign-artifacts</id>
+                                <phase>verify</phase>
+                                <goals>
+                                    <goal>sign</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 </project>

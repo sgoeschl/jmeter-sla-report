@@ -1,5 +1,3 @@
-# JMeter SLA Report
-
 ## 1. Introduction 
 
 The `jmeter-sla-report` is a replacement for the existing XSLT-based reporting backend when running JMeter from the command line to solve the following problems
@@ -38,7 +36,7 @@ whereas the following JMeter SLA reports are generated
 
 Afterwards you see a report similar to the image below
 
-![JMeter HTML Report](./src/site/resources/images/access-log-sla-report.png "HTML Report")
+![JMeter HTML Report](./src/site/images/access-log-sla-report.png "HTML Report")
 
 ## 3. ANT Integration
 
